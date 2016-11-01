@@ -1,19 +1,25 @@
-import de.htwg.mps.chess.model._
+import de.htwg.mps.chess.model.{Field, Pawn, Team}
+
+//val fields: Array[Array[Field]] = Array.fill[Field](5, 5)(new Field(-1, -1))
+//for (elem <- fields) {
+//  for (elem <- elem) {
+//    println(elem)
+//  }
+//}
 
 
-val f = new Field(1, 1)
-println(f.figure)
+val fields = Array.ofDim[Field](8, 8)
 
-val f2 = new King(1, 2, Team.black)
-val f3 = new Pawn(1, 2, Team.black)
-val f4 = new Field(f2)
+for {
+  i <- 0 until fields.length
+  j <- 0 until fields(0).length
+} fields(i)(j) = new Field(new Pawn(2, 2, Team.black))
 
-println(f4.isKing())
-f4.figure = Some(f3)
-println(f4.isKing())
+val x = Array(Array(1,1), Array(0,1))
 
-
-f4.clear()
-println(f4.isKing())
+val f = fields(0)(0).figure.get
+val pm = f.simpleMoveValidation(f, fields, x)
+pm.foreach(println)
 
 
+f.verticalMoveValidation(f, fields)
