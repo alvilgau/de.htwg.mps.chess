@@ -36,7 +36,6 @@ trait MoveValidator {
   def verticalMoveValidation(figure: Figure, fields: Array[Array[Field]]): List[Field] = {
     val possibleMoves = new ListBuffer[Field]
 
-    println("AYW")
     // moving right
     breakable {
       for (i <- figure.posX + 1 to figure.POS_MAX) {
