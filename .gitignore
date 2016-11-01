@@ -1,0 +1,13 @@
+# IntelliJ project files
+.idea
+*.iml
+out
+gen
+
+# sbt specific
+.cachgit e
+.history
+.lib/
+dist/*
+target/
+
