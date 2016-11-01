@@ -17,12 +17,12 @@ trait MoveValidator {
     false
   }
 
-  def simpleMoveValidation(figure: Figure, fields: Array[Array[Field]], moves: Array[Array[Int]]): List[Field] = {
+  def simpleMoveValidation(figure: Figure, board: Board, moves: Array[Array[Int]]): List[Field] = {
     val possibleMoves = new ListBuffer[Field]
 
     for (move <- moves) {
       breakable {
-        val fieldOption = figure.getNeighbourField(move(0), move(1), fields)
+        val fieldOption = board.getFieldOption(figure.posX + move(0), figure.posY + move(1))
         if (fieldOption.isEmpty) {
           break()
         }
@@ -33,13 +33,13 @@ trait MoveValidator {
     possibleMoves.toList
   }
 
-  def verticalMoveValidation(figure: Figure, fields: Array[Array[Field]]): List[Field] = {
+  def verticalMoveValidation(figure: Figure, board: Board): List[Field] = {
     val possibleMoves = new ListBuffer[Field]
 
     // moving right
     breakable {
-      for (i <- figure.posX + 1 to figure.POS_MAX) {
-        if (checkCollision(figure, fields(i)(figure.posY), possibleMoves)) {
+      for (i <- figure.posX + 1 to board.sizeX) {
+        if (checkCollision(figure, board.getField(i, figure.posY), possibleMoves)) {
           break()
         }
       }
@@ -47,8 +47,8 @@ trait MoveValidator {
 
     // moving left
     breakable {
-      for (i <- figure.posX - 1 to figure.POS_MIN by -1) {
-        if (checkCollision(figure, fields(i)(figure.posY), possibleMoves)) {
+      for (i <- figure.posX - 1 to board.MIN_POS by -1) {
+        if (checkCollision(figure, board.getField(i, figure.posY), possibleMoves)) {
           break()
         }
       }
