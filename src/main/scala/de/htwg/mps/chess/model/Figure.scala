@@ -13,6 +13,8 @@ abstract class Figure extends MoveValidator {
 
   var team: Team
 
+  def getPossibleMoves(fields: Array[Array[Field]]): List[Field]
+
   def move(x: Int, y: Int): Boolean = {
     posX = x
     posY = y
