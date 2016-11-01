@@ -18,18 +18,18 @@ abstract class Figure extends MoveValidator {
   def move(x: Int, y: Int): Boolean = {
     posX = x
     posY = y
-    return false
+    false
   }
 
   def getNeighbourField(x: Int, y: Int, fields: Array[Array[Field]]): Option[Field] = {
-    val newPosX = posX + x;
-    val newPosY = posY + y;
+    val newPosX = posX + x
+    val newPosY = posY + y
 
     if (newPosX > POS_MAX || newPosY > POS_MAX || newPosX < POS_MIN || newPosY < POS_MIN) {
       return None
     }
 
-    return Some(fields(newPosX)(newPosY))
+    Some(fields(newPosX)(newPosY))
   }
 
 }

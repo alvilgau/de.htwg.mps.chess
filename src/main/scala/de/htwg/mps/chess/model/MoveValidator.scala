@@ -14,7 +14,7 @@ trait MoveValidator {
     }
 
     possibleMoves += field
-    return false
+    false
   }
 
   def simpleMoveValidation(figure: Figure, fields: Array[Array[Field]], moves: Array[Array[Int]]): List[Field] = {
@@ -23,14 +23,14 @@ trait MoveValidator {
     for (move <- moves) {
       breakable {
         val fieldOption = figure.getNeighbourField(move(0), move(1), fields)
-        if (fieldOption == scala.None) {
+        if (fieldOption.isEmpty) {
           break()
         }
         checkCollision(figure, fieldOption.get, possibleMoves)
       }
     }
 
-    return possibleMoves.toList
+    possibleMoves.toList
   }
 
   def verticalMoveValidation(figure: Figure, fields: Array[Array[Field]]): List[Field] = {
@@ -54,6 +54,6 @@ trait MoveValidator {
       }
     }
 
-    return possibleMoves.toList
+    possibleMoves.toList
   }
 }
