@@ -2,5 +2,5 @@ name := "de.htwg.mps.chess"
 
 version := "1.0"
 
-scalaVersion := "2.12.0"
+scalaVersion := "2.11.8"
     
