@@ -1,5 +1,5 @@
 # IntelliJ project files
-.idea
+.idea/
 *.iml
 out
 gen
@@ -10,4 +10,3 @@ gen
 .lib/
 dist/*
 target/
-
