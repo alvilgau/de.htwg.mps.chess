@@ -18,8 +18,5 @@ abstract class Figure extends MoveValidator {
     false
   }
 
-  override def toString: String = {
-    getClass.getSimpleName.charAt(0).toString
-  }
-
+  override def toString: String = getClass.getSimpleName.charAt(0).toString
 }
