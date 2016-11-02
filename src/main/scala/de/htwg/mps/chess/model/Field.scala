@@ -6,9 +6,17 @@ case class Field(var figure: Option[Figure], posX: Int, posY: Int) {
 
   def this(figure: Figure) = this(Some(figure), figure.posX, figure.posY)
 
-  def isSet(): Boolean = figure.isDefined
+  def isSet: Boolean = figure.isDefined
 
-  def isKing(): Boolean = isSet() && figure.get.isInstanceOf[King]
+  def isKing: Boolean = isSet && figure.get.isInstanceOf[King]
 
   def clear() = figure = None
+
+  override def toString = {
+    if (isSet) {
+      figure.get.toString
+    } else {
+      "-"
+    }
+  }
 }

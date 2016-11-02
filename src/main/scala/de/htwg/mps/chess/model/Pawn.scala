@@ -12,14 +12,14 @@ case class Pawn(var posX: Int, var posY: Int, var team: Team, startPosY: Int) ex
 
     // move 1 field forward
     var fieldOption = board.getFieldOption(posX, posY + dY)
-    if (fieldOption.isDefined && !fieldOption.get.isSet()) {
+    if (fieldOption.isDefined && !fieldOption.get.isSet) {
       possibleMoves += fieldOption.get
 
       // move 2 field forward
       if (posY == startPosY) {
         val dY2 = if (team == Team.white) 2 else -2
         fieldOption = board.getFieldOption(posX, posY + dY2)
-        if (fieldOption.isDefined && !fieldOption.get.isSet()) {
+        if (fieldOption.isDefined && !fieldOption.get.isSet) {
           possibleMoves += fieldOption.get
         }
       }
@@ -36,7 +36,7 @@ case class Pawn(var posX: Int, var posY: Int, var team: Team, startPosY: Int) ex
     val fieldOption = board.getFieldOption(posX + dX, posY + dY)
     if (fieldOption.isDefined) {
       val field = fieldOption.get
-      if (field.isSet() && field.figure.get.team != team) {
+      if (field.isSet && field.figure.get.team != team) {
         possibleMoves += field
       }
     }

@@ -6,7 +6,7 @@ import util.control.Breaks._
 trait MoveValidator {
 
   private def checkCollision(figure: Figure, field: Field, possibleMoves: ListBuffer[Field]): Boolean = {
-    if (field.isSet()) {
+    if (field.isSet) {
       if (figure.team != field.figure.get.team) {
         possibleMoves += field
       }
