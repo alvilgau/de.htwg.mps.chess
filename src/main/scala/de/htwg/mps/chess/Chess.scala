@@ -1,8 +1,12 @@
 package de.htwg.mps.chess
 
+import de.htwg.mps.chess.controller.ChessController
+
 object Chess {
 
   def main(args: Array[String]) {
-    println("hello chess")
+    val controller = new ChessController()
+    println("Welcome to Chess")
+    println(controller)
   }
 }
