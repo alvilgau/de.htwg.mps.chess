@@ -17,7 +17,7 @@ trait MoveValidator {
     false
   }
 
-  def simpleMoveValidation(figure: Figure, board: Board, moves: Array[Array[Int]]): List[Field] = {
+  def simpleMoveValidation(figure: Figure, board: Board, moves: List[Array[Int]]): List[Field] = {
     val possibleMoves = new ListBuffer[Field]
 
     for (move <- moves) {
