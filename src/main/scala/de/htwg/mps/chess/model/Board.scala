@@ -8,6 +8,8 @@ object Board {
 
 case class Board(sizeX: Int, sizeY: Int) {
 
+  val fields = new mutable.MutableList[Field]()
+
   /* Initialize board */
   for {
     i <- Board.MIN_POS to sizeX
@@ -15,8 +17,6 @@ case class Board(sizeX: Int, sizeY: Int) {
   } {
     fields += new Field(i, j)
   }
-
-  val fields = new mutable.MutableList[Field]()
 
   def getField(x: Int, y: Int) = fields.filter(f => f.posX == x && f.posY == y).head
 
