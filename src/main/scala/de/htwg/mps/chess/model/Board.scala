@@ -6,14 +6,14 @@ object Board {
   val MIN_POS = 0
 }
 
-case class Board(sizeX: Int, sizeY: Int) {
+case class Board(size: Int) {
 
   val fields = new mutable.MutableList[Field]()
 
-  /* Initialize board */
+  /* Create fields */
   for {
-    i <- Board.MIN_POS to sizeX
-    j <- Board.MIN_POS to sizeY
+    i <- Board.MIN_POS until size
+    j <- Board.MIN_POS until size
   } {
     fields += new Field(i, j)
   }
@@ -28,9 +28,9 @@ case class Board(sizeX: Int, sizeY: Int) {
     sb ++= "\n |  a  b  c  d  e  f  g  h  |"
     sb ++= "\n-+--------------------------+"
 
-    for (y <- sizeY - 1 to Board.MIN_POS by -1) {
+    for (y <- size - 1 to Board.MIN_POS by -1) {
       sb ++= "\n" + (y + 1) + "|  "
-      for (x <- Board.MIN_POS until sizeX) {
+      for (x <- Board.MIN_POS until size) {
         sb ++= getField(x, y) + "  "
       }
       sb ++= "|"

@@ -38,7 +38,7 @@ trait MoveValidator {
 
     // moving right
     breakable {
-      for (i <- figure.posX + 1 to board.sizeX) {
+      for (i <- figure.posX + 1 to board.size) {
         if (checkCollision(figure, board.getField(i, figure.posY), possibleMoves)) {
           break()
         }
@@ -62,7 +62,7 @@ trait MoveValidator {
 
     // moving up
     breakable {
-      for (i <- figure.posX + 1 to board.sizeY) {
+      for (i <- figure.posX + 1 to board.size) {
         if (checkCollision(figure, board.getField(figure.posX, i), possibleMoves)) {
           break()
         }
@@ -88,7 +88,7 @@ trait MoveValidator {
     var x = figure.posX - 1
     var y = figure.posY + 1
     breakable {
-      while (x >= Board.MIN_POS && y <= board.sizeY) {
+      while (x >= Board.MIN_POS && y <= board.size) {
         if (checkCollision(figure, board.getField(x, y), possibleMoves)) {
           break()
         }
@@ -114,7 +114,7 @@ trait MoveValidator {
     x = figure.posX + 1
     y = figure.posY + 1
     breakable {
-      while (x <= board.sizeX && y <= board.sizeY) {
+      while (x <= board.size && y <= board.size) {
         if (checkCollision(figure, board.getField(x, y), possibleMoves)) {
           break()
         }
@@ -127,7 +127,7 @@ trait MoveValidator {
     x = figure.posX + 1
     y = figure.posY - 1
     breakable {
-      while (x <= board.sizeX && y >= Board.MIN_POS) {
+      while (x <= board.size && y >= Board.MIN_POS) {
         if (checkCollision(figure, board.getField(x, y), possibleMoves)) {
           break()
         }

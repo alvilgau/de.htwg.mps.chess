@@ -7,6 +7,6 @@ object Chess {
   def main(args: Array[String]) {
     val controller = new ChessController()
     println("Welcome to Chess")
-    println(controller)
+    println(controller.boardToString)
   }
 }
