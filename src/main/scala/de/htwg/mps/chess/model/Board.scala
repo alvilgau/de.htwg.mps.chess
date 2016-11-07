@@ -18,9 +18,11 @@ case class Board(size: Int) {
     fields += new Field(i, j)
   }
 
-  def getField(x: Int, y: Int) = fields.filter(f => f.posX == x && f.posY == y).head
-
   def getFieldOption(x: Int, y: Int) = fields.find(f => f.posX == x && f.posY == y)
+
+  def getField(x: Int, y: Int) = getFieldOption(x, y).get
+
+  def setFigure(figure: Figure) = getField(figure.posX, figure.posY).figure = Some(figure)
 
   override def toString = {
     val sb = new mutable.StringBuilder
