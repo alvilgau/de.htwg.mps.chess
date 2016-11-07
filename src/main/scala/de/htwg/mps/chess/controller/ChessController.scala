@@ -1,6 +1,7 @@
 package de.htwg.mps.chess.controller
 
-import de.htwg.mps.chess.model.{Board, Figure, Team}
+import de.htwg.mps.chess.model.Team.Team
+import de.htwg.mps.chess.model._
 import de.htwg.mps.chess.util.Observable
 
 class ChessController extends Observable {
@@ -14,6 +15,31 @@ class ChessController extends Observable {
   var turn = Team.white
 
   var status = "Welcome to Chess"
+
+  // init figures
+  initFigures(0, Team.white)
+  initFigures(7, Team.black)
+  initPawns(1, Team.white)
+  initPawns(6, Team.black)
+
+  private def initFigures(posY: Int, team: Team) = {
+    board.getFields(posY).foreach(field =>
+      field.posX match {
+        case 0 | 7 => field.figure = Some(Rook(field.posX, posY, team))
+        case 1 | 6 => field.figure = Some(Knight(field.posX, posY, team))
+        case 2 | 5 => field.figure = Some(Bishop(field.posX, posY, team))
+        case 3 => field.figure = Some(Queen(field.posX, posY, team))
+        case 4 => field.figure = Some(King(field.posX, posY, team))
+        case _ => field.figure = Some(Rook(field.posX, posY, team))
+      }
+    )
+  }
+
+  private def initPawns(posY: Int, team: Team) = {
+    board.getFields(posY).foreach(field =>
+      field.figure = Some(Pawn(field.posX, posY, team))
+    )
+  }
 
   def handleMovement(x: Int, y: Int) = {
     if (!selected) {

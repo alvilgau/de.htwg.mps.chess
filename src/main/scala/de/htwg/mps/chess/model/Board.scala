@@ -22,6 +22,8 @@ case class Board(size: Int) {
 
   def getField(x: Int, y: Int) = getFieldOption(x, y).get
 
+  def getFields(y: Int) = fields.filter(_.posY == y)
+
   def setFigure(figure: Figure) = getField(figure.posX, figure.posY).figure = Some(figure)
 
   override def toString = {

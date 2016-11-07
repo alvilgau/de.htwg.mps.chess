@@ -1,11 +1,16 @@
 package de.htwg.mps.chess.model
 
 import scala.collection.mutable.ListBuffer
-import util.control.Breaks._
+import scala.util.control.Breaks._
 
 trait MoveValidator {
 
-  private def checkCollision(figure: Figure, field: Field, possibleMoves: ListBuffer[Field]): Boolean = {
+  private def checkCollision(figure: Figure, fieldOption: Option[Field], possibleMoves: ListBuffer[Field]): Boolean = {
+    if (fieldOption.isEmpty) {
+      return true
+    }
+
+    val field = fieldOption.get
     if (field.isSet) {
       if (figure.team != field.figure.get.team) {
         possibleMoves += field
@@ -26,7 +31,7 @@ trait MoveValidator {
         if (fieldOption.isEmpty) {
           break()
         }
-        checkCollision(figure, fieldOption.get, possibleMoves)
+        checkCollision(figure, fieldOption, possibleMoves)
       }
     }
 
@@ -39,7 +44,7 @@ trait MoveValidator {
     // moving right
     breakable {
       for (i <- figure.posX + 1 to board.size) {
-        if (checkCollision(figure, board.getField(i, figure.posY), possibleMoves)) {
+        if (checkCollision(figure, board.getFieldOption(i, figure.posY), possibleMoves)) {
           break()
         }
       }
@@ -48,7 +53,7 @@ trait MoveValidator {
     // moving left
     breakable {
       for (i <- figure.posX - 1 to Board.MIN_POS by -1) {
-        if (checkCollision(figure, board.getField(i, figure.posY), possibleMoves)) {
+        if (checkCollision(figure, board.getFieldOption(i, figure.posY), possibleMoves)) {
           break()
         }
       }
@@ -62,8 +67,8 @@ trait MoveValidator {
 
     // moving up
     breakable {
-      for (i <- figure.posX + 1 to board.size) {
-        if (checkCollision(figure, board.getField(figure.posX, i), possibleMoves)) {
+      for (i <- figure.posY + 1 to board.size) {
+        if (checkCollision(figure, board.getFieldOption(figure.posX, i), possibleMoves)) {
           break()
         }
       }
@@ -71,8 +76,8 @@ trait MoveValidator {
 
     // moving down
     breakable {
-      for (i <- figure.posX - 1 to Board.MIN_POS by -1) {
-        if (checkCollision(figure, board.getField(figure.posX, i), possibleMoves)) {
+      for (i <- figure.posY - 1 to Board.MIN_POS by -1) {
+        if (checkCollision(figure, board.getFieldOption(figure.posX, i), possibleMoves)) {
           break()
         }
       }
@@ -89,7 +94,7 @@ trait MoveValidator {
     var y = figure.posY + 1
     breakable {
       while (x >= Board.MIN_POS && y <= board.size) {
-        if (checkCollision(figure, board.getField(x, y), possibleMoves)) {
+        if (checkCollision(figure, board.getFieldOption(x, y), possibleMoves)) {
           break()
         }
         x -= 1
@@ -102,7 +107,7 @@ trait MoveValidator {
       x = figure.posX - 1
       y = figure.posY - 1
       while (x >= Board.MIN_POS && y >= Board.MIN_POS) {
-        if (checkCollision(figure, board.getField(x, y), possibleMoves)) {
+        if (checkCollision(figure, board.getFieldOption(x, y), possibleMoves)) {
           break()
         }
         x -= 1
@@ -115,7 +120,7 @@ trait MoveValidator {
     y = figure.posY + 1
     breakable {
       while (x <= board.size && y <= board.size) {
-        if (checkCollision(figure, board.getField(x, y), possibleMoves)) {
+        if (checkCollision(figure, board.getFieldOption(x, y), possibleMoves)) {
           break()
         }
         x += 1
@@ -128,7 +133,7 @@ trait MoveValidator {
     y = figure.posY - 1
     breakable {
       while (x <= board.size && y >= Board.MIN_POS) {
-        if (checkCollision(figure, board.getField(x, y), possibleMoves)) {
+        if (checkCollision(figure, board.getFieldOption(x, y), possibleMoves)) {
           break()
         }
         x += 1

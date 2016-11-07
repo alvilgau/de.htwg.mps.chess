@@ -4,7 +4,9 @@ import de.htwg.mps.chess.model.Team.Team
 
 import scala.collection.mutable.ListBuffer
 
-case class Pawn(var posX: Int, var posY: Int, var team: Team, startPosY: Int) extends Figure {
+case class Pawn(var posX: Int, var posY: Int, var team: Team) extends Figure {
+
+  private val startPosY = posY
 
   override def getPossibleMoves(board: Board): List[Field] = {
     val possibleMoves = new ListBuffer[Field]
