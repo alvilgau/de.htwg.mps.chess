@@ -8,14 +8,14 @@ object Board {
 
 case class Board(size: Int) {
 
-  val fields = new mutable.MutableList[Field]()
+  var fields: List[Field] = List()
 
   /* Create fields */
   for {
     i <- Board.MIN_POS until size
     j <- Board.MIN_POS until size
   } {
-    fields += new Field(i, j)
+    fields = fields :+ new Field(i, j)
   }
 
   def getFieldOption(x: Int, y: Int) = fields.find(f => f.posX == x && f.posY == y)

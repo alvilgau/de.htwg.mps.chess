@@ -1,8 +1,9 @@
 package de.htwg.mps.chess.controller
 
 import de.htwg.mps.chess.model.{Board, Figure, Team}
+import de.htwg.mps.chess.util.Observable
 
-class ChessController {
+class ChessController extends Observable {
 
   val board = Board(8)
 
@@ -30,9 +31,11 @@ class ChessController {
       if (possibleMoves.nonEmpty) {
         selected = true
         status = "One Figure is selected."
+        notifyObservers()
       }
     } else {
       status = "No Figure is selected."
+      notifyObservers()
     }
   }
 
@@ -54,9 +57,11 @@ class ChessController {
     } else {
       status = "Move failed. No Figure is selected."
     }
+
+    selected = false
+    notifyObservers()
   }
 
   def getTurnMessage = "Team " + turn + "'s turn"
 
-  def boardToString = board.toString
 }
