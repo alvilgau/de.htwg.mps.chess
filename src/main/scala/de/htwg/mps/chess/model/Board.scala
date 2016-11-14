@@ -4,10 +4,12 @@ import scala.collection.mutable
 
 object Board {
   val MIN_POS = 0
+  var MAX_POS = -1
 }
 
 case class Board(size: Int) {
 
+  Board.MAX_POS = size - 1
   var fields: List[Field] = List()
 
   /* Create fields */
@@ -32,7 +34,7 @@ case class Board(size: Int) {
     sb ++= "\n |  a  b  c  d  e  f  g  h  |"
     sb ++= "\n-+--------------------------+"
 
-    for (y <- size - 1 to Board.MIN_POS by -1) {
+    for (y <- Board.MAX_POS to Board.MIN_POS by -1) {
       sb ++= "\n" + (y + 1) + "|  "
       for (x <- Board.MIN_POS until size) {
         sb ++= getField(x, y) + "  "

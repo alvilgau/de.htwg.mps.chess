@@ -6,9 +6,11 @@ import de.htwg.mps.chess.util.Observable
 
 class ChessController extends Observable {
 
-  val board = Board(8)
+  val board = Board(3)
 
   var selected = false
+
+  var exchange = false
 
   var moveFigure: Figure = null
 
@@ -41,7 +43,11 @@ class ChessController extends Observable {
     )
   }
 
-  def handleMovement(x: Int, y: Int) = {
+  def handleMovement(x: Int, y: Int): Unit = {
+    if (exchange) {
+      return
+    }
+
     if (!selected) {
       select(x, y)
     } else {
@@ -73,11 +79,13 @@ class ChessController extends Observable {
       fieldOld.clear()
 
       // move figure
-      moveFigure.move(x, y)
+      exchange = moveFigure.move(x, y)
       board.setFigure(moveFigure)
 
       // set new team for next turn
       turn = if (turn == Team.white) Team.black else Team.white
+
+      updateCheckmate()
 
       status = "Figure was moved successfully."
     } else {
@@ -85,6 +93,37 @@ class ChessController extends Observable {
     }
 
     selected = false
+    notifyObservers()
+  }
+
+  private def updateCheckmate() = {
+    // TODO: implement
+  }
+
+  def exchangeKnight() = {
+    val figure = new Knight(moveFigure.posX, moveFigure.posY, moveFigure.team)
+    doExchange(figure)
+  }
+
+  def exchangeBishop() = {
+    val figure = new Bishop(moveFigure.posX, moveFigure.posY, moveFigure.team)
+    doExchange(figure)
+  }
+
+  def exchangeRook() = {
+    val figure = new Rook(moveFigure.posX, moveFigure.posY, moveFigure.team)
+    doExchange(figure)
+  }
+
+  def exchangeQueen() = {
+    val figure = new Queen(moveFigure.posX, moveFigure.posY, moveFigure.team)
+    doExchange(figure)
+  }
+
+  private def doExchange(figure: Figure) = {
+    board.setFigure(figure)
+    exchange = false
+    updateCheckmate()
     notifyObservers()
   }
 

@@ -18,21 +18,39 @@ class TextUI(controller: ChessController) extends Observer {
 
   def printTUI() = {
     println(controller.board)
-    println(controller.status)
-    println(controller.getTurnMessage)
-    println("Please enter a command: q - quit, r - restart, ma1 - selects the figure at position a1 " +
-      "OR moves the selected figure to a1")
+
+    if (controller.exchange) {
+      println("Pawn reaches end of the playground. Please choose a new Figure for the exchange")
+      println("Possible commands are: knight, bishop, rook, queen")
+    }
+    else {
+      println(controller.status)
+      println(controller.getTurnMessage)
+      println("Please enter a command: q - quit, r - restart, ma1 - selects the figure at position a1 " +
+        "OR moves the selected figure to a1")
+    }
   }
 
   def processInputLine(input: String) = {
-    input match {
+    input.toLowerCase match {
       case "q" => continue = false
       case "r" => println("restart")
+      case cmd if controller.exchange => handleExchange(cmd)
       case cmd if cmd.startsWith("m") && cmd.length == 3 => handleMovement(cmd)
       case _ => println("Invalid command!")
     }
 
     continue
+  }
+
+  private def handleExchange(cmd: String) = {
+    cmd match {
+      case "knight" => controller.exchangeKnight()
+      case "bishop" => controller.exchangeBishop()
+      case "rook" => controller.exchangeRook()
+      case "queen" => controller.exchangeQueen()
+      case _ => println("Invalid command!")
+    }
   }
 
   private def handleMovement(input: String) = {

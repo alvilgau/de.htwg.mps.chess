@@ -43,4 +43,15 @@ case class Pawn(var posX: Int, var posY: Int, var team: Team) extends Figure {
       }
     }
   }
+
+  override def move(x: Int, y: Int) = {
+    posX = x
+    posY = y
+
+    if (team == Team.white) {
+      posY == Board.MAX_POS
+    } else {
+      posY == Board.MIN_POS
+    }
+  }
 }
