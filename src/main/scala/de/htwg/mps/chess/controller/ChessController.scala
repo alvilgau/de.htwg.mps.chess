@@ -1,12 +1,13 @@
 package de.htwg.mps.chess.controller
 
+import de.htwg.mps.chess.controller.Exchange.ExchangeValue
 import de.htwg.mps.chess.model.Team.Team
 import de.htwg.mps.chess.model._
 import de.htwg.mps.chess.util.Observable
 
 class ChessController extends Observable {
 
-  val board = Board(3)
+  val board = Board(8)
 
   var selected = false
 
@@ -100,29 +101,16 @@ class ChessController extends Observable {
     // TODO: implement
   }
 
-  def exchangeKnight() = {
-    val figure = new Knight(moveFigure.posX, moveFigure.posY, moveFigure.team)
-    doExchange(figure)
-  }
 
-  def exchangeBishop() = {
-    val figure = new Bishop(moveFigure.posX, moveFigure.posY, moveFigure.team)
-    doExchange(figure)
-  }
+  def doExchange(exchangeValue: ExchangeValue) = {
+    // create figure by reflection
+    val constructor = exchangeValue.clazz.getConstructors.head
+    val instance = constructor.newInstance(new Integer(moveFigure.posX), new Integer(moveFigure.posY), moveFigure.team)
+    val figure = instance.asInstanceOf[Figure]
 
-  def exchangeRook() = {
-    val figure = new Rook(moveFigure.posX, moveFigure.posY, moveFigure.team)
-    doExchange(figure)
-  }
-
-  def exchangeQueen() = {
-    val figure = new Queen(moveFigure.posX, moveFigure.posY, moveFigure.team)
-    doExchange(figure)
-  }
-
-  private def doExchange(figure: Figure) = {
     board.setFigure(figure)
     exchange = false
+    status += " " + exchangeValue.toString.capitalize + " was chosen."
     updateCheckmate()
     notifyObservers()
   }

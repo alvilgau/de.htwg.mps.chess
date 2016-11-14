@@ -1,6 +1,7 @@
 package de.htwg.mps.chess.aview.tui
 
-import de.htwg.mps.chess.controller.ChessController
+import de.htwg.mps.chess.controller.Exchange.ExchangeValue
+import de.htwg.mps.chess.controller.{ChessController, Exchange}
 import de.htwg.mps.chess.util.Observer
 
 private object PositionX extends Enumeration {
@@ -14,14 +15,14 @@ class TextUI(controller: ChessController) extends Observer {
 
   private var continue = true
 
-  override def update(): Unit = printTUI()
+  override def update() = printTUI()
 
   def printTUI() = {
     println(controller.board)
 
     if (controller.exchange) {
       println("Pawn reaches end of the playground. Please choose a new Figure for the exchange")
-      println("Possible commands are: knight, bishop, rook, queen")
+      println("Possible commands are: " + Exchange.values.mkString(", "))
     }
     else {
       println(controller.status)
@@ -44,19 +45,19 @@ class TextUI(controller: ChessController) extends Observer {
   }
 
   private def handleExchange(cmd: String) = {
-    cmd match {
-      case "knight" => controller.exchangeKnight()
-      case "bishop" => controller.exchangeBishop()
-      case "rook" => controller.exchangeRook()
-      case "queen" => controller.exchangeQueen()
-      case _ => println("Invalid command!")
+    try {
+      val exchangeVal = Exchange.withName(cmd).asInstanceOf[ExchangeValue]
+      controller.doExchange(exchangeVal)
+    }
+    catch {
+      case e: NoSuchElementException => println("Invalid command!")
     }
   }
 
-  private def handleMovement(input: String) = {
+  private def handleMovement(cmd: String) = {
     try {
-      val posX = PositionX.withName(input.charAt(1).toString).id
-      val posY = input.charAt(2).toString.toInt - 1
+      val posX = PositionX.withName(cmd.charAt(1).toString).id
+      val posY = cmd.charAt(2).toString.toInt - 1
       controller.handleMovement(posX, posY)
     } catch {
       case e: NoSuchElementException => println("Invalid command!")
