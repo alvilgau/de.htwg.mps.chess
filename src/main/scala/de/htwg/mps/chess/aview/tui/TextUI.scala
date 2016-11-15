@@ -35,7 +35,7 @@ class TextUI(controller: ChessController) extends Observer {
   def processInputLine(input: String) = {
     input.toLowerCase match {
       case "q" => continue = false
-      case "r" => println("restart")
+      case "r" => controller.restart()
       case cmd if controller.exchange => handleExchange(cmd)
       case cmd if cmd.startsWith("m") && cmd.length == 3 => handleMovement(cmd)
       case _ => println("Invalid command!")

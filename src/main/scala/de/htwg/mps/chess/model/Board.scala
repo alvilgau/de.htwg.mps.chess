@@ -12,12 +12,17 @@ case class Board(size: Int) {
   Board.MAX_POS = size - 1
   var fields: List[Field] = List()
 
-  /* Create fields */
-  for {
-    i <- Board.MIN_POS until size
-    j <- Board.MIN_POS until size
-  } {
-    fields = fields :+ new Field(i, j)
+  init()
+
+  def init() = {
+    // clear and create fields
+    fields = List()
+    for {
+      i <- Board.MIN_POS until size
+      j <- Board.MIN_POS until size
+    } {
+      fields = fields :+ new Field(i, j)
+    }
   }
 
   def getFieldOption(x: Int, y: Int) = fields.find(f => f.posX == x && f.posY == y)

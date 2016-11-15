@@ -19,11 +19,14 @@ class ChessController extends Observable {
 
   var status = "Welcome to Chess"
 
-  // init figures
-  initFigures(0, Team.white)
-  initFigures(7, Team.black)
-  initPawns(1, Team.white)
-  initPawns(6, Team.black)
+  initFigures()
+
+  private def initFigures(): Unit = {
+    initFigures(0, Team.white)
+    initFigures(7, Team.black)
+    initPawns(1, Team.white)
+    initPawns(6, Team.black)
+  }
 
   private def initFigures(posY: Int, team: Team) = {
     board.getFields(posY).foreach(field =>
@@ -101,6 +104,16 @@ class ChessController extends Observable {
     // TODO: implement
   }
 
+  def restart() = {
+    selected = false
+    exchange = false
+    moveFigure = null
+    turn = Team.white
+    status = "Welcome to Chess"
+    board.init()
+    initFigures()
+    notifyObservers()
+  }
 
   def doExchange(exchangeValue: ExchangeValue) = {
     // create figure by reflection
