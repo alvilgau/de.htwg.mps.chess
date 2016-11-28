@@ -13,9 +13,13 @@ class ChessController extends Observable {
 
   var exchange = false
 
+  var gameover = false
+
   var moveFigure: Figure = _
 
   var turn: Team = Team.white
+
+  val checkMate = new CheckMate()
 
   var status = "Welcome to Chess"
 
@@ -101,14 +105,26 @@ class ChessController extends Observable {
   }
 
   private def updateCheckmate() = {
-    // TODO: implement
+    val teamWhite = board.getFigures(Team.white)
+    val teamBlack = board.getFigures(Team.black)
+    checkMate.update(board, teamWhite, teamBlack)
+
+    if (checkMate.isCheckWhite && turn == Team.black) {
+      checkMate.nextStateWhite()
+    } else if (checkMate.isCheckBlack && turn == Team.white) {
+      checkMate.nextStateBlack()
+    }
+
+    gameover = checkMate.isMateWhite || checkMate.isMateBlack
   }
 
   def restart(): Unit = {
     selected = false
     exchange = false
+    gameover = false
     moveFigure = null
     turn = Team.white
+    checkMate.clear()
     status = "Welcome to Chess"
     board.init()
     initFigures()

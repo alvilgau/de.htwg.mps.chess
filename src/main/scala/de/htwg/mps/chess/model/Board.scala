@@ -1,10 +1,12 @@
 package de.htwg.mps.chess.model
 
+import de.htwg.mps.chess.model.Team.Team
+
 import scala.collection.mutable
 
 object Board {
-  val MIN_POS = 0
-  var MAX_POS = -1
+  val MIN_POS: Int = 0
+  var MAX_POS: Int = -1
 }
 
 case class Board(size: Int) {
@@ -14,7 +16,7 @@ case class Board(size: Int) {
 
   init()
 
-  def init() = {
+  def init(): Unit = {
     // clear and create fields
     fields = List()
     for {
@@ -25,15 +27,17 @@ case class Board(size: Int) {
     }
   }
 
-  def getFieldOption(x: Int, y: Int) = fields.find(f => f.posX == x && f.posY == y)
+  def getFieldOption(x: Int, y: Int): Option[Field] = fields.find(f => f.posX == x && f.posY == y)
 
-  def getField(x: Int, y: Int) = getFieldOption(x, y).get
+  def getField(x: Int, y: Int): Field = getFieldOption(x, y).get
 
-  def getFields(y: Int) = fields.filter(_.posY == y)
+  def getFields(y: Int): List[Field] = fields.filter(_.posY == y)
 
-  def setFigure(figure: Figure) = getField(figure.posX, figure.posY).figure = Some(figure)
+  def setFigure(figure: Figure): Unit = getField(figure.posX, figure.posY).figure = Some(figure)
 
-  override def toString = {
+  def getFigures(team: Team): List[Figure] = fields.filter(f => f.isSet && f.figure.get.team == team).map(_.figure.get)
+
+  override def toString: String = {
     val sb = new mutable.StringBuilder
 
     sb ++= "\n |  a  b  c  d  e  f  g  h  |"

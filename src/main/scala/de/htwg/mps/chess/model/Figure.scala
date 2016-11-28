@@ -12,6 +12,8 @@ abstract class Figure extends MoveValidator {
 
   def getPossibleMoves(board: Board): List[Field]
 
+  def isKing: Boolean = isInstanceOf[King]
+
   def move(x: Int, y: Int): Boolean = {
     posX = x
     posY = y

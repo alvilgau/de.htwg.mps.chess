@@ -8,11 +8,9 @@ case class Field(var figure: Option[Figure], posX: Int, posY: Int) {
 
   def isSet: Boolean = figure.isDefined
 
-  def isKing: Boolean = isSet && figure.get.isInstanceOf[King]
+  def clear(): Unit = figure = None
 
-  def clear() = figure = None
-
-  override def toString = {
+  override def toString: String = {
     if (isSet) {
       figure.get.toString
     } else {
