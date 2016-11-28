@@ -1,7 +1,7 @@
 package de.htwg.mps.chess.controller
 
 import de.htwg.mps.chess.controller.Exchange.ExchangeValue
-import de.htwg.mps.chess.model.Team.Team
+import de.htwg.mps.chess.model.Team._
 import de.htwg.mps.chess.model._
 import de.htwg.mps.chess.util.Observable
 
@@ -13,9 +13,9 @@ class ChessController extends Observable {
 
   var exchange = false
 
-  var moveFigure: Figure = null
+  var moveFigure: Figure = _
 
-  var turn = Team.white
+  var turn: Team = Team.white
 
   var status = "Welcome to Chess"
 
@@ -104,7 +104,7 @@ class ChessController extends Observable {
     // TODO: implement
   }
 
-  def restart() = {
+  def restart(): Unit = {
     selected = false
     exchange = false
     moveFigure = null
@@ -115,7 +115,7 @@ class ChessController extends Observable {
     notifyObservers()
   }
 
-  def doExchange(exchangeValue: ExchangeValue) = {
+  def doExchange(exchangeValue: ExchangeValue): Unit = {
     // create figure by reflection
     val constructor = exchangeValue.clazz.getConstructors.head
     val instance = constructor.newInstance(new Integer(moveFigure.posX), new Integer(moveFigure.posY), moveFigure.team)
@@ -128,6 +128,6 @@ class ChessController extends Observable {
     notifyObservers()
   }
 
-  def getTurnMessage = "Team " + turn + "'s turn"
+  def getTurnMessage: String = "Team " + turn + "'s turn"
 
 }
