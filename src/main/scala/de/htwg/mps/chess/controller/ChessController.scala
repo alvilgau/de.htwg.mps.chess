@@ -52,7 +52,7 @@ class ChessController extends Observable {
   }
 
   def handleMovement(x: Int, y: Int): Unit = {
-    if (exchange) {
+    if (gameover || exchange) {
       return
     }
 
