@@ -60,6 +60,6 @@ class CheckMate {
     CheckMate.save
   }
 
-  private def nextState(checkMate: CheckMate.Value) = CheckMate.apply(checkMate.id + 1)
+  private def nextState(checkMate: CheckMate.Value) = CheckMate(checkMate.id + 1)
 
 }
