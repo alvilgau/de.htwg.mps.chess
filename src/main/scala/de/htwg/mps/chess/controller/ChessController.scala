@@ -23,9 +23,11 @@ class ChessController extends Actor {
 
   var status = "Welcome to Chess"
 
+  val view: ActorSelection = context.system.actorSelection("user/view*")
+
   initFigures()
 
-  context.system.actorSelection("user/view$*") ! UpdateInfo(board.toString, status, getTurnMessage, checkMate)
+  notifyView()
 
   private def initFigures(): Unit = {
     initFigures(0, Team.white)
@@ -53,12 +55,26 @@ class ChessController extends Actor {
     )
   }
 
-  override def receive: Receive = {
-    case RestartCmd => println("RESTART")
-    case _ => context.system.actorSelection("user/view$*") ! UpdateInfo(board.toString, status, getTurnMessage, checkMate)
+  private def notifyView(): Unit = {
+    var info: Info = null
+    if (gameover) {
+      info = GameoverInfo(board.toString, status, checkMate)
+    } else if (exchange) {
+      info = ExchangeInfo(board.toString)
+    } else {
+      info = UpdateInfo(board.toString, status, getTurnMessage, checkMate)
+    }
+    view ! info
   }
 
-  def handleMovement(x: Int, y: Int): Unit = {
+  override def receive: Receive = {
+    case move: MoveCmd => handleMovement(move.posX, move.posY)
+    case exchange: ExchangeCmd => doExchange(exchange.exchangeValue)
+    case RestartCmd => restart()
+    case QuitCmd => exit()
+  }
+
+  private def handleMovement(x: Int, y: Int): Unit = {
     if (gameover || exchange) {
       return
     }
@@ -78,11 +94,11 @@ class ChessController extends Actor {
       if (possibleMoves.nonEmpty) {
         selected = true
         status = "One Figure is selected."
-        //        notifyObservers()
+        notifyView()
       }
     } else {
       status = "No Figure is selected."
-      //      notifyObservers()
+      notifyView()
     }
   }
 
@@ -108,7 +124,7 @@ class ChessController extends Actor {
     }
 
     selected = false
-    //    notifyObservers()
+    notifyView()
   }
 
   private def updateCheckmate() = {
@@ -125,7 +141,7 @@ class ChessController extends Actor {
     gameover = checkMate.isMateWhite || checkMate.isMateBlack
   }
 
-  def restart(): Unit = {
+  private def restart(): Unit = {
     selected = false
     exchange = false
     gameover = false
@@ -135,10 +151,15 @@ class ChessController extends Actor {
     status = "Welcome to Chess"
     board.init()
     initFigures()
-    //    notifyObservers()
+    notifyView()
   }
 
-  def doExchange(exchangeValue: ExchangeValue): Unit = {
+  private def exit() = {
+    context.system.terminate()
+    System.exit(0)
+  }
+
+  private def doExchange(exchangeValue: ExchangeValue): Unit = {
     // create figure by reflection
     val constructor = exchangeValue.clazz.getConstructors.head
     val instance = constructor.newInstance(new Integer(moveFigure.posX), new Integer(moveFigure.posY), moveFigure.team)
@@ -148,9 +169,9 @@ class ChessController extends Actor {
     exchange = false
     status += " " + exchangeValue.toString.capitalize + " was chosen."
     updateCheckmate()
-    //    notifyObservers()
+    notifyView()
   }
 
-  def getTurnMessage: String = "Team " + turn + "'s turn"
+  private def getTurnMessage: String = "Team " + turn + "'s turn"
 
 }
