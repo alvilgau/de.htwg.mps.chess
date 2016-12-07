@@ -46,10 +46,6 @@ class TextUI() extends Actor {
       "OR moves the selected figure to a1")
   }
 
-  def test(): String = {
-     "awd"
-  }
-
   private def processInputLine(input: String): Unit = {
     (input.toLowerCase, currentInfo) match {
       case ("q", _) => controller ! QuitCmd
