@@ -1,60 +1,70 @@
 package de.htwg.mps.chess.aview.tui
 
-import de.htwg.mps.chess.controller.Exchange.ExchangeValue
-import de.htwg.mps.chess.controller.{ChessController, Exchange}
-import de.htwg.mps.chess.util.Observer
+import akka.actor.{Actor, ActorSelection}
+import de.htwg.mps.chess.controller.{Exchange, _}
 
 private object PositionX extends Enumeration {
   type PositionX = Value
   val a, b, c, d, e, f, g, h = Value
 }
 
-class TextUI(controller: ChessController) extends Observer {
-  controller.add(this)
-  printTUI()
+class TextUI() extends Actor {
 
-  private var continue = true
+  val controller: ActorSelection = context.system.actorSelection("user/controller")
 
-  override def update(): Unit = printTUI()
+  var currentInfo: Info = _
 
-  def printTUI(): Unit = {
-    println(controller.board)
-
-    if (controller.exchange) {
-      println("Pawn reaches end of the playground. Please choose a new Figure for the exchange")
-      println("Possible commands are: " + Exchange.values.mkString(", "))
-    }
-    else if (controller.gameover) {
-      println(controller.status)
-      println(controller.checkMate.getStatusMessage)
-      println("Please enter a command: q - quit, r - restart")
-    }
-    else {
-      println(controller.status)
-      println(controller.getTurnMessage)
-      println(controller.checkMate.getStatusMessage)
-      println("Please enter a command: q - quit, r - restart, ma1 - selects the figure at position a1 " +
-        "OR moves the selected figure to a1")
-    }
+  override def receive: Receive = {
+    case info: Info =>
+      currentInfo = info
+      println(info.board)
+      info match {
+        case info: ExchangeInfo => printExchange(info)
+        case info: GameoverInfo => printGameover(info)
+        case info: UpdateInfo => printUpdate(info)
+      }
+    // cmd input
+    case input: String => processInputLine(input)
   }
 
-  def processInputLine(input: String): Boolean = {
-    input.toLowerCase match {
-      case "q" => continue = false
-      case "r" => controller.restart()
-      case _ if controller.gameover => println("Invalid command!")
-      case cmd if controller.exchange => handleExchange(cmd)
-      case cmd if cmd.startsWith("m") && cmd.length == 3 => handleMovement(cmd)
+  private def printExchange(info: ExchangeInfo) = {
+    println("Pawn reaches end of the playground. Please choose a new Figure for the exchange")
+    println("Possible commands are: " + Exchange.values.mkString(", "))
+  }
+
+  private def printGameover(info: GameoverInfo) = {
+    println(info.status)
+    println(info.checkMate.getStatusMessage)
+    println("Please enter a command: q - quit, r - restart")
+  }
+
+  private def printUpdate(info: UpdateInfo) = {
+    println(info.status)
+    println(info.turnMessage)
+    println(info.checkMate.getStatusMessage)
+    println("Please enter a command: q - quit, r - restart, ma1 - selects the figure at position a1 " +
+      "OR moves the selected figure to a1")
+  }
+
+  def test(): String = {
+     "awd"
+  }
+
+  private def processInputLine(input: String): Unit = {
+    (input.toLowerCase, currentInfo) match {
+      case ("q", _) => controller ! QuitCmd
+      case ("r", _) => controller ! RestartCmd
+      case (_, _: GameoverInfo) => println("Invalid command!")
+      case (cmd, _: ExchangeInfo) => handleExchange(cmd)
+      case (cmd, _) if cmd.startsWith("m") && cmd.length == 3 => handleMovement(cmd)
       case _ => println("Invalid command!")
     }
-
-    continue
   }
 
   private def handleExchange(cmd: String) = {
     try {
-      val exchangeVal = Exchange.withName(cmd).asInstanceOf[ExchangeValue]
-      controller.doExchange(exchangeVal)
+      val exchangeVal = Exchange.withName(cmd).asInstanceOf[Exchange.ExchangeValue]
+      controller ! ExchangeCmd(exchangeVal)
     }
     catch {
       case _: NoSuchElementException => println("Invalid command!")
@@ -65,7 +75,7 @@ class TextUI(controller: ChessController) extends Observer {
     try {
       val posX = PositionX.withName(cmd.charAt(1).toString).id
       val posY = cmd.charAt(2).toString.toInt - 1
-      controller.handleMovement(posX, posY)
+      controller ! MoveCmd(posX, posY)
     } catch {
       case _: NoSuchElementException => println("Invalid command!")
     }

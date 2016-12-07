@@ -1,11 +1,11 @@
 package de.htwg.mps.chess.controller
 
+import akka.actor.{Actor, ActorSelection}
 import de.htwg.mps.chess.controller.Exchange.ExchangeValue
 import de.htwg.mps.chess.model.Team._
 import de.htwg.mps.chess.model._
-import de.htwg.mps.chess.util.Observable
 
-class ChessController extends Observable {
+class ChessController extends Actor {
 
   val board = Board(8)
 
@@ -24,6 +24,8 @@ class ChessController extends Observable {
   var status = "Welcome to Chess"
 
   initFigures()
+
+  context.system.actorSelection("user/view$*") ! UpdateInfo(board.toString, status, getTurnMessage, checkMate)
 
   private def initFigures(): Unit = {
     initFigures(0, Team.white)
@@ -51,6 +53,11 @@ class ChessController extends Observable {
     )
   }
 
+  override def receive: Receive = {
+    case RestartCmd => println("RESTART")
+    case _ => context.system.actorSelection("user/view$*") ! UpdateInfo(board.toString, status, getTurnMessage, checkMate)
+  }
+
   def handleMovement(x: Int, y: Int): Unit = {
     if (gameover || exchange) {
       return
@@ -71,11 +78,11 @@ class ChessController extends Observable {
       if (possibleMoves.nonEmpty) {
         selected = true
         status = "One Figure is selected."
-        notifyObservers()
+        //        notifyObservers()
       }
     } else {
       status = "No Figure is selected."
-      notifyObservers()
+      //      notifyObservers()
     }
   }
 
@@ -101,7 +108,7 @@ class ChessController extends Observable {
     }
 
     selected = false
-    notifyObservers()
+    //    notifyObservers()
   }
 
   private def updateCheckmate() = {
@@ -128,7 +135,7 @@ class ChessController extends Observable {
     status = "Welcome to Chess"
     board.init()
     initFigures()
-    notifyObservers()
+    //    notifyObservers()
   }
 
   def doExchange(exchangeValue: ExchangeValue): Unit = {
@@ -141,7 +148,7 @@ class ChessController extends Observable {
     exchange = false
     status += " " + exchangeValue.toString.capitalize + " was chosen."
     updateCheckmate()
-    notifyObservers()
+    //    notifyObservers()
   }
 
   def getTurnMessage: String = "Team " + turn + "'s turn"

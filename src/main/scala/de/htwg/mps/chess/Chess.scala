@@ -1,19 +1,18 @@
 package de.htwg.mps.chess
 
+import akka.actor.{ActorSelection, ActorSystem, Props}
 import de.htwg.mps.chess.aview.tui.TextUI
-import de.htwg.mps.chess.controller.ChessController
+import de.htwg.mps.chess.controller.{ChessController, ExchangeInfo, RestartCmd}
 
 object Chess {
 
   def main(args: Array[String]) {
-    val controller = new ChessController()
-    val tui = new TextUI(controller)
-
-    var run = true
-    while (run) {
+    val system = ActorSystem("ChessSystem")
+    val tui = system.actorOf(Props[TextUI], name = "view$tui")
+    system.actorOf(Props[ChessController], "controller")
+    while(true) {
       val input = scala.io.StdIn.readLine()
-      run = tui.processInputLine(input)
+      tui ! input
     }
-
   }
 }
