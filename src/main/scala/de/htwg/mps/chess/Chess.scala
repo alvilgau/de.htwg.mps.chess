@@ -10,6 +10,7 @@ object Chess {
     val system = ActorSystem("ChessSystem")
     val tui = system.actorOf(Props[TextUI], "view$tui")
     system.actorOf(Props[ChessController], "controller")
+
     while (true) {
       val input = scala.io.StdIn.readLine()
       tui ! input
