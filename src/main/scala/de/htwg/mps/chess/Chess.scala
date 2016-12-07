@@ -8,7 +8,7 @@ object Chess {
 
   def main(args: Array[String]) {
     val system = ActorSystem("ChessSystem")
-    val tui = system.actorOf(Props[TextUI], name = "view$tui")
+    val tui = system.actorOf(Props[TextUI], "view$tui")
     system.actorOf(Props[ChessController], "controller")
     while (true) {
       val input = scala.io.StdIn.readLine()
