@@ -4,6 +4,8 @@ trait Info {
   val board: String
 }
 
+case class InvalidInfo(board: String, message: String) extends Info
+
 case class ExchangeInfo(board: String) extends Info
 
 case class GameoverInfo(board: String, status: String, checkMate: CheckMate) extends Info

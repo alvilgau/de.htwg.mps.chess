@@ -7,23 +7,23 @@ import de.htwg.mps.chess.model._
 
 class ChessController extends Actor {
 
-  val board = Board(8)
+  private val board = Board(8)
 
-  var selected = false
+  private val view: ActorSelection = context.system.actorSelection("user/view*")
 
-  var exchange = false
+  private var selected = false
 
-  var gameover = false
+  private var exchange = false
 
-  var moveFigure: Figure = _
+  private var gameover = false
 
-  var turn: Team = Team.white
+  private var moveFigure: Figure = _
 
-  val checkMate = new CheckMate()
+  private var turn: Team = Team.white
 
-  var status = "Welcome to Chess"
+  private val checkMate = new CheckMate()
 
-  val view: ActorSelection = context.system.actorSelection("user/view*")
+  private var status = "Welcome to Chess"
 
   initFigures()
 
@@ -68,10 +68,12 @@ class ChessController extends Actor {
   }
 
   override def receive: Receive = {
-    case move: MoveCmd => handleMovement(move.posX, move.posY)
-    case exchange: ExchangeCmd => doExchange(exchange.exchangeValue)
-    case RestartCmd => restart()
     case QuitCmd => exit()
+    case RestartCmd => restart()
+    case _ if gameover => view ! InvalidInfo(board.toString, "Invalid Command")
+    case exchange: ExchangeCmd if this.exchange => doExchange(exchange.exchangeValue)
+    case move: MoveCmd => handleMovement(move.posX, move.posY)
+    case _ => view ! InvalidInfo(board.toString, "Invalid Command")
   }
 
   private def handleMovement(x: Int, y: Int): Unit = {

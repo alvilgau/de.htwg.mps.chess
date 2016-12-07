@@ -10,35 +10,33 @@ private object PositionX extends Enumeration {
 
 class TextUI() extends Actor {
 
-  val controller: ActorSelection = context.system.actorSelection("user/controller")
-
-  var currentInfo: Info = _
+  private val controller: ActorSelection = context.system.actorSelection("user/controller")
 
   override def receive: Receive = {
-    case info: Info =>
-      currentInfo = info
-      println(info.board)
-      info match {
-        case info: ExchangeInfo => printExchange(info)
-        case info: GameoverInfo => printGameover(info)
-        case info: UpdateInfo => printUpdate(info)
-      }
-    // cmd input
+    case info: InvalidInfo => println(info.message)
+    case info: ExchangeInfo => printExchange(info)
+    case info: GameoverInfo => printGameover(info)
+    case info: UpdateInfo => printUpdate(info)
+
+    // cmd line input
     case input: String => processInputLine(input)
   }
 
   private def printExchange(info: ExchangeInfo) = {
+    println(info.board)
     println("Pawn reaches end of the playground. Please choose a new Figure for the exchange")
     println("Possible commands are: " + Exchange.values.mkString(", "))
   }
 
   private def printGameover(info: GameoverInfo) = {
+    println(info.board)
     println(info.status)
     println(info.checkMate.getStatusMessage)
     println("Please enter a command: q - quit, r - restart")
   }
 
   private def printUpdate(info: UpdateInfo) = {
+    println(info.board)
     println(info.status)
     println(info.turnMessage)
     println(info.checkMate.getStatusMessage)
@@ -47,13 +45,21 @@ class TextUI() extends Actor {
   }
 
   private def processInputLine(input: String): Unit = {
-    (input.toLowerCase, currentInfo) match {
-      case ("q", _) => controller ! QuitCmd
-      case ("r", _) => controller ! RestartCmd
-      case (_, _: GameoverInfo) => println("Invalid command!")
-      case (cmd, _: ExchangeInfo) => handleExchange(cmd)
-      case (cmd, _) if cmd.startsWith("m") && cmd.length == 3 => handleMovement(cmd)
-      case _ => println("Invalid command!")
+    input.toLowerCase match {
+      case "q" => controller ! QuitCmd
+      case "r" => controller ! RestartCmd
+      case cmd if cmd.startsWith("m") && cmd.length == 3 => handleMovement(cmd)
+      case cmd => handleExchange(cmd)
+    }
+  }
+
+  private def handleMovement(cmd: String) = {
+    try {
+      val posX = PositionX.withName(cmd.charAt(1).toString).id
+      val posY = cmd.charAt(2).toString.toInt - 1
+      controller ! MoveCmd(posX, posY)
+    } catch {
+      case _: NoSuchElementException => println("Invalid command!")
     }
   }
 
@@ -67,14 +73,4 @@ class TextUI() extends Actor {
     }
   }
 
-  private def handleMovement(cmd: String) = {
-    try {
-      val posX = PositionX.withName(cmd.charAt(1).toString).id
-      val posY = cmd.charAt(2).toString.toInt - 1
-      controller ! MoveCmd(posX, posY)
-    } catch {
-      case _: NoSuchElementException => println("Invalid command!")
-    }
-
-  }
 }
