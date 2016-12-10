@@ -1,7 +1,13 @@
-@(message: String)
+@main("Welcome to Chess") {
 
-    @main("Welcome to Play") {
+    <div class="jumbotron">
+        <h1>Welcome to Chess</h1>
+        <p>
+            Chess is a two-player strategy board game played on a chessboard,
+            a checkered gameboard with 64 squares arranged in an eight-by-eight grid.
+            It is one of the world's most popular games, played by millions of people worldwide.
+        </p>
+        <p><a href="play" class="btn btn-primary btn-lg" role="button">Play Now!</a></p>
+    </div>
 
-        @play20.welcome(message)
-
-    }
+}
