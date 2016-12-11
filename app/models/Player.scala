@@ -13,6 +13,8 @@ class Player {
 
   var client: ActorRef = _
 
+  var game: GameInstance = _
+
   def createActor(out: ActorRef): Props = {
     client = out
     Props(new PlayerActor(out))

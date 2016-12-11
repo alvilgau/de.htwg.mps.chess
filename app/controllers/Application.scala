@@ -54,4 +54,15 @@ class Application @Inject()(implicit system: ActorSystem, materializer: Material
     gameInstances = gameInstances + (gameInstance.gameId -> gameInstance)
     Ok(views.html.wait())
   }
+
+  def joinGame(id: String) = Action { request =>
+    val gameInstance = gameInstances.get(id)
+    val player = getCurrentPlayer(request)
+    gameInstance.get.join(player.get)
+    Ok(views.html.chess())
+  }
+
+  def chess() = Action {
+    Ok(views.html.chess())
+  }
 }

@@ -1,0 +1,61 @@
+<script type="text/javascript">
+	var chess = $("chess-game")[0];
+    $(function () {
+        $("#exchangeAlert").hide();
+    });
+</script>
+
+<div id="exchangeAlert" class="alert alert-info" role="alert">
+    <h4><b>Exchange!</b></h4>
+    <p>Pawn reaches end of the playground. Please choose a new Figure for the exchange:</p>
+    <p>
+        <button class="btn btn-default" type="button" onclick="chess.exchange('knight')">Knight</button>
+        <button class="btn btn-default" type="button" onclick="chess.exchange('bishop')">Bishop</button>
+        <button class="btn btn-default" type="button" onclick="chess.exchange('rook')">Rook</button>
+        <button class="btn btn-default" type="button" onclick="chess.exchange('queen')">Queen</button>
+    </p>
+</div>
+
+<div id="modalGameInfo" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 id="modalGameInfoTitle" class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+                <p id="modalGameInfoContent"></p>
+            </div>
+            <div class="modal-footer">
+                <a href="/play" class="btn btn-primary">Back to lobby</a>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div id="gameContent" class="col-md-6">
+        <div id="playground" class="well">
+            @*<chess-game fields="@controller.getGameBoardAsJson"></chess-game>*@
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="well">
+            <h2 class="text-center">Status</h2>
+            @*TODO*@
+            @*<h3 class="text-center" id="status">@controller.getStatusMessage() @controller.getCheckmateMessage()</h3>*@
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="well">
+            <h2 class="text-center">Turn</h2>
+            @*TODO*@
+            @*<h3 class="text-center" id="turn">@controller.getTurnMessage()</h3>*@
+        </div>
+    </div>
+</div>
