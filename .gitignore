@@ -1,11 +1,12 @@
 # IntelliJ project files
 .idea/
-*.iml
 out
 gen
 
 # sbt specific
-.history
 .lib/
 dist/*
 target/
+
+# bower
+public/bower_components/

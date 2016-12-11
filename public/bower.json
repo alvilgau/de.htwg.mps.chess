@@ -1,0 +1,21 @@
+{
+  "name": "de.htwg.mps.chess",
+  "homepage": "https://github.com/alvilgau/de.htwg.mps.chess",
+  "authors": [
+    "Alex Vilgauk"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.6.0"
+  },
+  "private": true
+}

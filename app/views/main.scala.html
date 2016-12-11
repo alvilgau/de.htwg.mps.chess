@@ -7,8 +7,11 @@
         <title>@title</title>
         <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
 
+            <!-- Web components -->
+        <script type="text/javascript" src="@routes.Assets.at("bower_components/webcomponentsjs/webcomponents-lite.js")"></script>
+
             <!-- jQuery -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 
             <!-- Bootstrap -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
@@ -53,9 +56,11 @@
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         <li id="login"><a href="/login"><span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>
-                            Login</a></li>
+                            Login</a>
+                        </li>
                         <li id="logout"><a href="/logout"><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>
-                            Logout</a></li>
+                            Logout</a>
+                        </li>
                     </ul>
                 </div>
             </div>
