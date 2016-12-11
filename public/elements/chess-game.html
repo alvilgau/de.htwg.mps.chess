@@ -1,0 +1,92 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<dom-module id="chess-game">
+    <style>
+        img {
+            width: 100%;
+        }
+
+        .preview {
+            width: 200px;
+            height: 200px;
+        }
+
+        .field {
+            box-sizing: border-box;
+            float: left;
+            width: 12.5%;
+            height: 12.5%;
+            border-width: 1px;
+            border-style: solid;
+        }
+
+        .field:hover {
+            background-color: lime;
+            opacity: 0.5;
+        }
+
+        .dark {
+            background-color: #A4785B;
+        }
+
+        .light {
+            background-color: #E5CEA4;
+        }
+
+        .selected {
+            border-style: solid;
+            border-width: 3px;
+            border-color: cornflowerblue;
+            background-origin: border-box;
+        }
+
+        .possible {
+            background-color: lavender;
+        }
+
+        .clear {
+            clear: both;
+        }
+    </style>
+    <template>
+        <template is="dom-repeat" items="{{fields}}" as="field">
+            <div class$="field {{field.color}} {{field.highlight}}" on-tap="_tap">
+                <img src="assets/images/{{field.figure}}.png">
+            </div>
+        </template>
+
+        <div class="clear"></div>
+    </template>
+</dom-module>
+
+<script>
+    Polymer({
+        is: "chess-game",
+
+        properties: {
+            fields: Array
+        },
+
+        setFields: function (fields) {
+            this.fields = fields;
+            this.fields.forEach(function (field) {
+                field
+                if ((field.posX + field.posY) % 2 == 0) {
+                    field.color = "dark";
+                } else {
+                    field.color = "light";
+                }
+            });
+        },
+
+        _tap: function (event) {
+            var field = event.model.field;
+            $.ajax({
+                type: "GET",
+                url: "move/" + field.posX + "/" + field.posY
+            });
+        }
+
+    })
+
+</script>

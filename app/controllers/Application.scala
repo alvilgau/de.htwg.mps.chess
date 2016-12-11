@@ -5,6 +5,7 @@ import java.util.UUID
 import akka.actor.ActorSystem
 import akka.stream.Materializer
 import com.google.inject.Inject
+import core.scala.de.htwg.mps.chess.controller.MoveCmd
 import models.{GameInstance, Player}
 import play.api.libs.streams.ActorFlow
 import play.api.mvc._
@@ -52,7 +53,7 @@ class Application @Inject()(implicit system: ActorSystem, materializer: Material
     val player = getCurrentPlayer(request).get
     val gameInstance = new GameInstance(gameName, player)
     gameInstances = gameInstances + (gameInstance.gameId -> gameInstance)
-    Ok(views.html.wait())
+    Ok(views.html.chess())
   }
 
   def joinGame(id: String) = Action { request =>
@@ -66,8 +67,8 @@ class Application @Inject()(implicit system: ActorSystem, materializer: Material
     Ok(views.html.chess())
   }
 
-  def move(pos: String) = Action { request =>
-    getCurrentPlayer(request).get.game.chess.tui ! pos
+  def move(posX: Int, posY: Int) = Action { request =>
+    getCurrentPlayer(request).get.game.chess.controller ! MoveCmd(posX, posY)
     Ok("super")
   }
 }

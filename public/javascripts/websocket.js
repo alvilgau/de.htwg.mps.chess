@@ -27,7 +27,12 @@ function connect() {
             refreshStatusMessages(data);
             if (!data.select && !data.exchange) {
                 // refresh game content
-                $("#gameContent").load("/chess #playground");
+                // $("#gameContent").load("/chess #playground");
+                var game = $("chess-game")[0];
+                if (game != null) {
+                    game.setFields(data.fields);
+                }
+
             }
         }
     };

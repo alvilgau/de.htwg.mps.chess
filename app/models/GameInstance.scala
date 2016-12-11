@@ -13,18 +13,16 @@ class GameInstance(gameName: String, player1: Player) {
     override def receive: Receive = {
       case info: Info =>
         var json = infoToJson(info)
-        json = json + ("test" -> JsString("dw"))
+        json = json + ("test" -> JsString("awdw"))
 
         player1.client ! json.toString
     }
 
     private def infoToJson(info: Info): JsObject = {
-      val fields: List[String] = info.board.fields.map(f => {
-        if (f.isSet)
-          f.figure.get.team + f.figure.get.getClass.getSimpleName
-        else
-          "empty"
-      })
+      val fields: List[FieldDTO] = info.board.fields
+        .map(FieldDTO.fromField)
+        .sortWith(_.posX < _.posX)
+        .sortWith(_.posY > _.posY)
       Json.obj("fields" -> fields)
     }
   }
