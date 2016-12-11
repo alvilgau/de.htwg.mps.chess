@@ -31,7 +31,7 @@ class TextUI() extends Actor {
   private def printGameover(info: GameoverInfo) = {
     println(info.board)
     println(info.status)
-    println(info.checkMate.getStatusMessage)
+    println(info.checkMateMessage)
     println("Please enter a command: q - quit, r - restart")
   }
 
@@ -39,7 +39,7 @@ class TextUI() extends Actor {
     println(info.board)
     println(info.status)
     println(info.turnMessage)
-    println(info.checkMate.getStatusMessage)
+    println(info.checkMateMessage)
     println("Please enter a command: q - quit, r - restart, ma1 - selects the figure at position a1 " +
       "OR moves the selected figure to a1")
   }

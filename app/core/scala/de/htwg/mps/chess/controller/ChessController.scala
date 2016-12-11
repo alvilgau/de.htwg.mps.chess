@@ -58,11 +58,11 @@ class ChessController extends Actor {
   private def notifyView(): Unit = {
     var info: Info = null
     if (gameover) {
-      info = GameoverInfo(board.toString, status, checkMate)
+      info = GameoverInfo(board.toString, status, checkMate.getStatusMessage)
     } else if (exchange) {
       info = ExchangeInfo(board.toString)
     } else {
-      info = UpdateInfo(board.toString, status, getTurnMessage, checkMate)
+      info = UpdateInfo(board.toString, status, getTurnMessage, checkMate.getStatusMessage)
     }
     view ! info
   }
