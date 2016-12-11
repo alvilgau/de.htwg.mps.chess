@@ -4,13 +4,28 @@ import java.util.UUID
 
 import akka.actor.{Actor, Props}
 import core.scala.de.htwg.mps.chess.Chess
-import play.api.libs.json.Json
+import core.scala.de.htwg.mps.chess.controller.Info
+import play.api.libs.json.{JsObject, JsString, Json}
 
 class GameInstance(gameName: String, player1: Player) {
 
   class GameInstanceActor extends Actor {
     override def receive: Receive = {
-      case _ => println("GAME INSTANCE ACTOR HERE.....")
+      case info: Info =>
+        var json = infoToJson(info)
+        json = json + ("test" -> JsString("dw"))
+
+        player1.client ! json.toString
+    }
+
+    private def infoToJson(info: Info): JsObject = {
+      val fields: List[String] = info.board.fields.map(f => {
+        if (f.isSet)
+          f.figure.get.team + f.figure.get.getClass.getSimpleName
+        else
+          "empty"
+      })
+      Json.obj("fields" -> fields)
     }
   }
 
@@ -35,7 +50,7 @@ class GameInstance(gameName: String, player1: Player) {
   }
 
   private def notifyPlayer(player: Player, data: String): Unit = {
-    val json = Json.obj("type" -> data).toString()
+    val json = Json.obj("type" -> data).toString
     if (run) {
       player.client ! json
     }
