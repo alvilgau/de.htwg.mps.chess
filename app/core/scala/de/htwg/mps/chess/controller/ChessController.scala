@@ -62,7 +62,7 @@ class ChessController extends Actor {
     } else if (exchange) {
       info = ExchangeInfo(board)
     } else {
-      info = UpdateInfo(board, status, getTurnMessage, checkMate)
+      info = UpdateInfo(board, selected, status, getTurnMessage, checkMate)
     }
     view ! info
   }

@@ -12,4 +12,4 @@ case class ExchangeInfo(board: Board) extends Info
 
 case class GameoverInfo(board: Board, status: String, checkMate: CheckMate) extends Info
 
-case class UpdateInfo(board: Board, status: String, turnMessage: String, checkMate: CheckMate) extends Info
+case class UpdateInfo(board: Board, selected: Boolean, status: String, turnMessage: String, checkMate: CheckMate) extends Info
