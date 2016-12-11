@@ -65,4 +65,9 @@ class Application @Inject()(implicit system: ActorSystem, materializer: Material
   def chess() = Action {
     Ok(views.html.chess())
   }
+
+  def move(pos: String) = Action { request =>
+    getCurrentPlayer(request).get.game.chess.tui ! pos
+    Ok("super")
+  }
 }
