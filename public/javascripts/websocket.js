@@ -19,11 +19,8 @@ function connect() {
             $("#pageContent").load("/play #pageContent > *");
         } else if (data.type == "start") {
             $("#pageContent").load("/chess");
-        } else if (data.type == "won") {
-            showModalGameInfo("Won", "Congratulation you have won!");
-        } else if (data.type == "lost") {
-            showModalGameInfo("Lost", "You have lost!");
-        } else {
+        }
+        else {
             refreshStatusMessages(data);
             // refresh game content
             var game = $("chess-game")[0];
@@ -37,8 +34,13 @@ function connect() {
             } else {
                 game.setData(data);
             }
-
         }
-    };
+
+        if (data.type == "won") {
+            showModalGameInfo("Won", "Congratulation you have won!");
+        } else if (data.type == "lost") {
+            showModalGameInfo("Lost", "You have lost!");
+        }
+    }
 
 }
