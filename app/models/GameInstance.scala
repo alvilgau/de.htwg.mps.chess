@@ -46,10 +46,13 @@ class GameInstance(gameName: String, player1: Player) {
 
     private def boardToJson(info: UpdateInfo): JsObject = {
       val fields: List[FieldDTO] = boardToDTO(info)
-      // set fields on the can be moved
       if (info.selected != null) {
+        // set selected field
+        fields.find(f => f.posX == info.selected._1 && f.posY == info.selected._2).get.highlight = "selected "
+
+        // set fields on the can be moved
         fields.filter(f => info.possibleMoves.exists(p => p.posX == f.posX && p.posY == f.posY))
-          .foreach(_.highlight = "possible")
+          .foreach(_.highlight += "possible")
       }
 
       Json.obj("fields" -> fields)
