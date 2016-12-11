@@ -2,6 +2,9 @@ package core.scala.de.htwg.mps.chess.aview.tui
 
 import akka.actor.{Actor, ActorSelection}
 import core.scala.de.htwg.mps.chess.controller._
+import core.scala.de.htwg.mps.chess.model.Board
+
+import scala.collection.mutable
 
 private object PositionX extends Enumeration {
   type PositionX = Value
@@ -23,25 +26,43 @@ class TextUI() extends Actor {
   }
 
   private def printExchange(info: ExchangeInfo) = {
-    println(info.board)
+    printBoard(info.board)
     println("Pawn reaches end of the playground. Please choose a new Figure for the exchange")
     println("Possible commands are: " + Exchange.values.mkString(", "))
   }
 
   private def printGameover(info: GameoverInfo) = {
-    println(info.board)
+    printBoard(info.board)
     println(info.status)
     println(info.checkMateMessage)
     println("Please enter a command: q - quit, r - restart")
   }
 
   private def printUpdate(info: UpdateInfo) = {
-    println(info.board)
+    printBoard(info.board)
     println(info.status)
     println(info.turnMessage)
     println(info.checkMateMessage)
     println("Please enter a command: q - quit, r - restart, ma1 - selects the figure at position a1 " +
       "OR moves the selected figure to a1")
+  }
+
+  private def printBoard(board: Board): Unit = {
+    val sb = new mutable.StringBuilder
+
+    sb ++= "\n |  a  b  c  d  e  f  g  h  |"
+    sb ++= "\n-+--------------------------+"
+
+    for (y <- Board.MAX_POS to Board.MIN_POS by -1) {
+      sb ++= "\n" + (y + 1) + "|  "
+      for (x <- Board.MIN_POS until board.size) {
+        sb ++= board.getField(x, y) + "  "
+      }
+      sb ++= "|"
+    }
+
+    sb ++= "\n-+--------------------------+"
+    println(sb)
   }
 
   private def processInputLine(input: String): Unit = {

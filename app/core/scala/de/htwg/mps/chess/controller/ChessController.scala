@@ -58,11 +58,11 @@ class ChessController extends Actor {
   private def notifyView(): Unit = {
     var info: Info = null
     if (gameover) {
-      info = GameoverInfo(board.toString, status, checkMate.getStatusMessage)
+      info = GameoverInfo(board, status, checkMate.getStatusMessage)
     } else if (exchange) {
-      info = ExchangeInfo(board.toString)
+      info = ExchangeInfo(board)
     } else {
-      info = UpdateInfo(board.toString, status, getTurnMessage, checkMate.getStatusMessage)
+      info = UpdateInfo(board, status, getTurnMessage, checkMate.getStatusMessage)
     }
     view ! info
   }
@@ -70,10 +70,10 @@ class ChessController extends Actor {
   override def receive: Receive = {
     case QuitCmd => exit()
     case RestartCmd => restart()
-    case _ if gameover => view ! InvalidInfo(board.toString, "Invalid Command")
+    case _ if gameover => view ! InvalidInfo(board, "Invalid Command")
     case exchange: ExchangeCmd if this.exchange => doExchange(exchange.exchangeValue)
     case move: MoveCmd => handleMovement(move.posX, move.posY)
-    case _ => view ! InvalidInfo(board.toString, "Invalid Command")
+    case _ => view ! InvalidInfo(board, "Invalid Command")
   }
 
   private def handleMovement(x: Int, y: Int): Unit = {
