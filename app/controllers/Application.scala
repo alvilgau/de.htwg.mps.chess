@@ -5,7 +5,8 @@ import java.util.UUID
 import akka.actor.ActorSystem
 import akka.stream.Materializer
 import com.google.inject.Inject
-import core.scala.de.htwg.mps.chess.controller.MoveCmd
+import core.scala.de.htwg.mps.chess.controller.Exchange.ExchangeValue
+import core.scala.de.htwg.mps.chess.controller.{Exchange, ExchangeCmd, MoveCmd}
 import models.{GameInstance, Player}
 import play.api.libs.streams.ActorFlow
 import play.api.mvc._
@@ -69,6 +70,12 @@ class Application @Inject()(implicit system: ActorSystem, materializer: Material
 
   def move(posX: Int, posY: Int) = Action { request =>
     getCurrentPlayer(request).get.game.chess.controller ! MoveCmd(posX, posY)
-    Ok("super")
+    Ok("moved")
+  }
+
+  def exchange(figure: String) = Action { request =>
+    val exchangeValue = Exchange.withName(figure).asInstanceOf[ExchangeValue]
+    getCurrentPlayer(request).get.game.chess.controller ! ExchangeCmd(exchangeValue)
+    Ok("exchanged")
   }
 }

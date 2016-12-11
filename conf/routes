@@ -11,8 +11,8 @@ GET        /play                    controllers.Application.lobby
 GET        /create/:gameName        controllers.Application.createGame(gameName: String)
 GET        /join/:id                controllers.Application.joinGame(id: String)
 GET        /chess                   controllers.Application.chess()
-
 GET        /move/:posX/:posY        controllers.Application.move(posX: Int, posY: Int)
+GET        /exchange/:figure        controllers.Application.exchange(figure: String)
 
 # WebSocket
 GET        /socket                  controllers.Application.socket

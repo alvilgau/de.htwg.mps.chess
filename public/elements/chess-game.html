@@ -76,6 +76,18 @@
                     field.color = "light";
                 }
             });
+
+            if (data.exchange) {
+                $("#exchangeAlert").show();
+            }
+        },
+
+        exchange: function (figure) {
+            $.ajax({
+                type: "GET",
+                url: "exchange/" + figure
+            });
+            $("#exchangeAlert").hide();
         },
 
         _tap: function (event) {

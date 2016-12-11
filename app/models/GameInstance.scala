@@ -33,10 +33,6 @@ class GameInstance(gameName: String, player1: Player) {
       // update
       case info: UpdateInfo =>
         var json = boardToJson(info)
-        if (info.selected != null) {
-          json = json + ("selectedX" -> JsNumber(info.selected._1))
-          json = json + ("selectedY" -> JsNumber(info.selected._2))
-        }
         json = json + ("statusMessage" -> JsString(info.status))
         json = json + ("checkmateMessage" -> JsString(info.checkMate.getStatusMessage))
         json = json + ("turnMessage" -> JsString(info.turnMessage))
