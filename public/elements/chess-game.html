@@ -67,10 +67,9 @@
             fields: Array
         },
 
-        setFields: function (fields) {
-            this.fields = fields;
+        setData: function (data) {
+            this.fields = data.fields;
             this.fields.forEach(function (field) {
-                field
                 if ((field.posX + field.posY) % 2 == 0) {
                     field.color = "dark";
                 } else {

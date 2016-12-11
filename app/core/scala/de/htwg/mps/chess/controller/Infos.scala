@@ -1,6 +1,6 @@
 package core.scala.de.htwg.mps.chess.controller
 
-import core.scala.de.htwg.mps.chess.model.Board
+import core.scala.de.htwg.mps.chess.model.{Board, Field}
 
 trait Info {
   val board: Board
@@ -12,4 +12,5 @@ case class ExchangeInfo(board: Board) extends Info
 
 case class GameoverInfo(board: Board, status: String, checkMate: CheckMate) extends Info
 
-case class UpdateInfo(board: Board, selected: Boolean, status: String, turnMessage: String, checkMate: CheckMate) extends Info
+case class UpdateInfo(board: Board, possibleMoves: List[Field], selected: (Int, Int), status: String,
+                      turnMessage: String, checkMate: CheckMate) extends Info

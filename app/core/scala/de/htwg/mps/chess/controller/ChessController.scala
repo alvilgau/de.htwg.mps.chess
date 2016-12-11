@@ -62,7 +62,13 @@ class ChessController extends Actor {
     } else if (exchange) {
       info = ExchangeInfo(board)
     } else {
-      info = UpdateInfo(board, selected, status, getTurnMessage, checkMate)
+      var selPos: (Int, Int) = null
+      var possMoves: List[Field] = null
+      if (selected) {
+        possMoves = moveFigure.getPossibleMoves(board)
+        selPos = (moveFigure.posX, moveFigure.posY)
+      }
+      info = UpdateInfo(board, possMoves, selPos, status, getTurnMessage, checkMate)
     }
     view ! info
   }

@@ -3,7 +3,7 @@ package models
 import core.scala.de.htwg.mps.chess.model.Field
 import play.api.libs.json.{Json, OFormat}
 
-case class FieldDTO(posX: Int, posY: Int, figure: String)
+case class FieldDTO(posX: Int, posY: Int, figure: String, var highlight: String = "")
 
 object FieldDTO {
 

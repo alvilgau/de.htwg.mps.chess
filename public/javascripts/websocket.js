@@ -25,15 +25,19 @@ function connect() {
             showModalGameInfo("Lost", "You have lost!");
         } else {
             refreshStatusMessages(data);
-            if (!data.select && !data.exchange) {
-                // refresh game content
-                // $("#gameContent").load("/chess #playground");
-                var game = $("chess-game")[0];
-                if (game != null) {
-                    game.setFields(data.fields);
-                }
-
+            // refresh game content
+            var game = $("chess-game")[0];
+            if (game == null) {
+                setTimeout(function () {
+                    var game = $("chess-game")[0];
+                    if (game != null) {
+                        game.setData(data);
+                    }
+                }, 100);
+            } else {
+                game.setData(data);
             }
+
         }
     };
 
