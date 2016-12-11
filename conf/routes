@@ -3,12 +3,15 @@
 # ~~~~
 
 # Home page
-GET        /                    controllers.Application.index
-GET        /rules               controllers.Application.rules
-GET        /play                controllers.Application.lobby
+GET        /                        controllers.Application.index
+GET        /rules                   controllers.Application.rules
+GET        /play                    controllers.Application.lobby
+
+# Gaming routes
+GET        /create/:gameName        controllers.Application.createGame(gameName: String)
 
 # WebSocket
-GET        /socket              controllers.Application.socket
+GET        /socket                  controllers.Application.socket
 
 # Map static resources from the /public folder to the /assets URL path
-GET        /assets/*file        controllers.Assets.at(path="/public", file)
+GET        /assets/*file            controllers.Assets.at(path="/public", file)

@@ -5,7 +5,7 @@ import java.util.UUID
 import akka.actor.ActorSystem
 import akka.stream.Materializer
 import com.google.inject.Inject
-import models.Player
+import models.{GameInstance, Player}
 import play.api.libs.streams.ActorFlow
 import play.api.mvc._
 
@@ -15,6 +15,7 @@ class Application @Inject()(implicit system: ActorSystem, materializer: Material
 
   private val SESSION_PLAYER_ID = "PLAYER_ID"
   private val players = new mutable.HashMap[String, Player]()
+  private val gameInstances = new mutable.HashMap[String, GameInstance]()
 
   def index = Action {
     Ok(views.html.index())
@@ -47,4 +48,10 @@ class Application @Inject()(implicit system: ActorSystem, materializer: Material
     ActorFlow.actorRef(out => player.get.createActor(out))
   }
 
+  def createGame(gameName: String) = Action { request =>
+    val player = getCurrentPlayer(request).get
+    val gameInstance = new GameInstance(gameName, player)
+    gameInstances.put(gameInstance.gameId, gameInstance)
+    Ok(views.html.wait())
+  }
 }
