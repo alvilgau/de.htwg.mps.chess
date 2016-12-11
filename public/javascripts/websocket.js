@@ -8,7 +8,13 @@ function connect() {
     var socket = new WebSocket(protocol + location.host + "/socket");
 
     socket.onmessage = function (msg) {
-        var data = JSON.parse(msg.data);
+        try {
+            var data = JSON.parse(msg.data);
+        } catch (e) {
+            console.warn(e);
+            return;
+        }
+
         if (data.type == "reloadLobby") {
             $("#pageContent").load("/play #pageContent > *");
         } else if (data.type == "start") {
@@ -25,4 +31,5 @@ function connect() {
             }
         }
     };
+
 }
