@@ -15,7 +15,7 @@ class Application @Inject()(implicit system: ActorSystem, materializer: Material
 
   private val SESSION_PLAYER_ID = "PLAYER_ID"
   private val players = new mutable.HashMap[String, Player]()
-  private val gameInstances = new mutable.HashMap[String, GameInstance]()
+  private var gameInstances = Map[String, GameInstance]()
 
   def index = Action {
     Ok(views.html.index())
@@ -36,10 +36,10 @@ class Application @Inject()(implicit system: ActorSystem, materializer: Material
       // first visit, create player
       val playerId = UUID.randomUUID().toString
       players.put(playerId, new Player())
-      Ok(views.html.lobby()).withSession(SESSION_PLAYER_ID -> playerId)
+      Ok(views.html.lobby(gameInstances)).withSession(SESSION_PLAYER_ID -> playerId)
     }
     else {
-      Ok(views.html.lobby())
+      Ok(views.html.lobby(gameInstances))
     }
   }
 
@@ -51,7 +51,7 @@ class Application @Inject()(implicit system: ActorSystem, materializer: Material
   def createGame(gameName: String) = Action { request =>
     val player = getCurrentPlayer(request).get
     val gameInstance = new GameInstance(gameName, player)
-    gameInstances.put(gameInstance.gameId, gameInstance)
+    gameInstances = gameInstances + (gameInstance.gameId -> gameInstance)
     Ok(views.html.wait())
   }
 }

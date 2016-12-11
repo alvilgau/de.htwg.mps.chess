@@ -21,4 +21,6 @@ class GameInstance(gameName: String, player1: Player) {
 
   val chess = new Chess(gameId)
   chess.system.actorOf(Props(new GameInstanceActor()), "view$wui")
+
+  def getGameName: String = gameName
 }
