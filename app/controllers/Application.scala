@@ -54,7 +54,7 @@ class Application @Inject()(implicit system: ActorSystem, materializer: Material
     val player = getCurrentPlayer(request).get
     val gameInstance = new GameInstance(gameName, player)
     gameInstances = gameInstances + (gameInstance.gameId -> gameInstance)
-    Ok(views.html.chess())
+    Ok(views.html.wait())
   }
 
   def joinGame(id: String) = Action { request =>
@@ -69,8 +69,14 @@ class Application @Inject()(implicit system: ActorSystem, materializer: Material
   }
 
   def move(posX: Int, posY: Int) = Action { request =>
-    getCurrentPlayer(request).get.game.chess.controller ! MoveCmd(posX, posY)
-    Ok("moved")
+    val player = getCurrentPlayer(request).get
+    val game = player.game
+    if (game.isCurrentTurn(player)) {
+      game.chess.controller ! MoveCmd(posX, posY)
+      Ok("successfully move")
+    } else {
+      Ok("not your turn")
+    }
   }
 
   def exchange(figure: String) = Action { request =>

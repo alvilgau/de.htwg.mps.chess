@@ -21,7 +21,6 @@ function connect() {
             $("#pageContent").load("/chess");
         }
         else {
-            refreshStatusMessages(data);
             // refresh game content
             var game = $("chess-game")[0];
             if (game == null) {
@@ -29,10 +28,12 @@ function connect() {
                     var game = $("chess-game")[0];
                     if (game != null) {
                         game.setData(data);
+                        refreshStatusMessages(data);
                     }
-                }, 100);
+                }, 200);
             } else {
                 game.setData(data);
+                refreshStatusMessages(data);
             }
         }
 

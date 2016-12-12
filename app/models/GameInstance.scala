@@ -10,8 +10,8 @@ import play.api.libs.json._
 class GameInstance(gameName: String, player1: Player) {
 
   class GameInstanceActor extends Actor {
-    override def receive: Receive = {
 
+    override def receive: Receive = {
       // game over
       case info: GameoverInfo =>
         var json = Json.obj("fields" -> boardToDTO(info))
@@ -27,17 +27,21 @@ class GameInstance(gameName: String, player1: Player) {
       case info: ExchangeInfo =>
         var json = Json.obj("fields" -> boardToDTO(info))
         json = json + ("exchange" -> JsBoolean(true))
-        player1.client ! json.toString
-      //        player2.client ! json
+        notifyPlayer(info.turnPlayer1, json.toString)
 
       // update
       case info: UpdateInfo =>
+        turnPlayer1 = info.turnPlayer1
         var json = boardToJson(info)
         json = json + ("statusMessage" -> JsString(info.status))
         json = json + ("checkmateMessage" -> JsString(info.checkMate.getStatusMessage))
         json = json + ("turnMessage" -> JsString(info.turnMessage))
-        player1.client ! json.toString
-      //        player2.client ! json
+        if (info.selected == null) {
+          player1.client ! json.toString
+          player2.client ! json.toString
+        } else {
+          notifyPlayer(info.turnPlayer1, json.toString)
+        }
     }
 
     private def boardToJson(info: UpdateInfo): JsObject = {
@@ -61,11 +65,19 @@ class GameInstance(gameName: String, player1: Player) {
         .sortWith(_.posY > _.posY)
     }
 
+    def notifyPlayer(turnPlayer1: Boolean, data: String): Unit = {
+      if (turnPlayer1) {
+        player1.client ! data
+      } else {
+        player2.client ! data
+      }
+    }
+
     private def notifyGameover(board: JsObject, playerWon: Player, playerLost: Player): Unit = {
       var json = board + ("type" -> JsString("won"))
       player1.client ! json.toString
       json = board + ("type" -> JsString("lost"))
-      //      player2.client ! json.toString
+      player2.client ! json.toString
     }
   }
 
@@ -80,13 +92,24 @@ class GameInstance(gameName: String, player1: Player) {
   val chess = new Chess(gameId)
   chess.system.actorOf(Props(new GameInstanceActor()), "view$wui")
 
+  var turnPlayer1: Boolean = _
+
   def getGameName: String = gameName
 
   def join(player: Player): Unit = {
     run = true
     player2 = player
     player2.game = this
-    player.client ! Json.obj("type" -> "start").toString
+    player1.client ! Json.obj("type" -> "start").toString
+    chess.start()
+  }
+
+  def isCurrentTurn(player: Player) = {
+    if (turnPlayer1) {
+      player1.equals(player)
+    } else {
+      player2.equals(player)
+    }
   }
 
 }

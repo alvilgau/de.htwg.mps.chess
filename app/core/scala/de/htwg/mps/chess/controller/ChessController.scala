@@ -60,7 +60,7 @@ class ChessController extends Actor {
     if (gameover) {
       info = GameoverInfo(board, status, checkMate)
     } else if (exchange) {
-      info = ExchangeInfo(board)
+      info = ExchangeInfo(board, turn == Team.white)
     } else {
       var selPos: (Int, Int) = null
       var possMoves: List[Field] = null
@@ -68,7 +68,7 @@ class ChessController extends Actor {
         possMoves = moveFigure.getPossibleMoves(board)
         selPos = (moveFigure.posX, moveFigure.posY)
       }
-      info = UpdateInfo(board, possMoves, selPos, status, getTurnMessage, checkMate)
+      info = UpdateInfo(board, possMoves, selPos, status, getTurnMessage, checkMate, turn == Team.white)
     }
     view ! info
   }
@@ -122,7 +122,9 @@ class ChessController extends Actor {
       board.setFigure(moveFigure)
 
       // set new team for next turn
-      turn = if (turn == Team.white) Team.black else Team.white
+      if (!exchange) {
+        turn = if (turn == Team.white) Team.black else Team.white
+      }
 
       updateCheckmate()
 
@@ -175,6 +177,7 @@ class ChessController extends Actor {
 
     board.setFigure(figure)
     exchange = false
+    turn = if (turn == Team.white) Team.black else Team.white
     status += " " + exchangeValue.toString.capitalize + " was chosen."
     updateCheckmate()
     notifyView()
