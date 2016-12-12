@@ -16,9 +16,12 @@ class Chess() {
 
 object Chess {
 
+  import scala.concurrent.ExecutionContext.Implicits.global
+
   def main(args: Array[String]) {
     val chess = new Chess()
     chess.start()
+    chess.system.whenTerminated.onComplete(_ => System.exit(0))
 
     while (true) {
       val input = scala.io.StdIn.readLine()

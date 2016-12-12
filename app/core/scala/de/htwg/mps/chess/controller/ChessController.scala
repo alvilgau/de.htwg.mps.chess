@@ -74,7 +74,7 @@ class ChessController extends Actor {
   }
 
   override def receive: Receive = {
-    case QuitCmd => exit()
+    case QuitCmd => context.system.terminate()
     case RestartCmd => restart()
     case _ if gameover => view ! InvalidInfo(board, "Invalid Command")
     case exchange: ExchangeCmd if this.exchange => doExchange(exchange.exchangeValue)
@@ -162,11 +162,6 @@ class ChessController extends Actor {
     board.init()
     initFigures()
     notifyView()
-  }
-
-  private def exit() = {
-    context.system.terminate()
-    System.exit(0)
   }
 
   private def doExchange(exchangeValue: ExchangeValue): Unit = {

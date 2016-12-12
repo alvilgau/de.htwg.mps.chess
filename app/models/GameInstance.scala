@@ -113,7 +113,7 @@ class GameInstance(gameName: String, var player1: Player) {
     }
     run = false
     finished = true
-    chess.system.terminate()
+    chess.controller ! QuitCmd
   }
 
 }
