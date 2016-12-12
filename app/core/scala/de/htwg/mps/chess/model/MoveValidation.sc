@@ -49,8 +49,21 @@ case object Right extends MoveDirection {
   }
 }
 
-class Move(md: MoveDirection) {
+trait MoveValidator {
+  def validate(fields: List[Field])(implicit figure: Figure): List[Field] = {
+    val index = fields.indexWhere(_.isSet)
+    if (index == -1) {
+      return fields
+    }
+    val list = fields.take(index + 1).reverse
+    if (list.head.figure.get.team == fig.team) {
+      return list.tail
+    }
+    list
+  }
+}
 
+class Move(md: MoveDirection) extends MoveValidator {
   private def sameDirection(field: Field)(implicit figure: Figure): Boolean = {
     md match {
       case Left | Right => field.posY == figure.posY
@@ -60,13 +73,14 @@ class Move(md: MoveDirection) {
 
   def perform(fields: List[Field], figure: Figure): List[Field] = {
     implicit val f: Figure = figure
-    fields.filter(md.filter)
+    val list = fields.filter(md.filter)
       .filter(sameDirection)
       .sortWith(md.sort)
+    validate(list)
   }
 }
 
-class Diagonal(md1: MoveDirection, md2: MoveDirection) {
+class Diagonal(md1: MoveDirection, md2: MoveDirection) extends MoveValidator {
   private def distance(v1: Int, v2: Int): Int = {
     Math.max(v1, v2) - Math.min(v1, v2)
   }
@@ -77,10 +91,11 @@ class Diagonal(md1: MoveDirection, md2: MoveDirection) {
 
   def perform(fields: List[Field], figure: Figure): List[Field] = {
     implicit val f: Figure = figure
-    fields.filter(md1.filter)
+    val list = fields.filter(md1.filter)
       .filter(md2.filter)
       .filter(sameDistance)
       .sortWith(md1.sort)
+    validate(list)
   }
 }
 
@@ -93,8 +108,20 @@ case object MoveUp extends Move(Up)
 case object MoveDown extends Move(Down)
 
 MoveLeft.perform(board.fields, fig).foreach(f => println((f.posX, f.posY)))
+board.setFigure(Pawn(1, 3, Team.black))
+MoveLeft.perform(board.fields, fig).foreach(f => println((f.posX, f.posY)))
+
+
 MoveRight.perform(board.fields, fig).foreach(f => println((f.posX, f.posY)))
+board.setFigure(Pawn(5, 3, Team.black))
+MoveRight.perform(board.fields, fig).foreach(f => println((f.posX, f.posY)))
+
 MoveUp.perform(board.fields, fig).foreach(f => println((f.posX, f.posY)))
+board.setFigure(Pawn(3, 6, Team.black))
+MoveUp.perform(board.fields, fig).foreach(f => println((f.posX, f.posY)))
+
+MoveDown.perform(board.fields, fig).foreach(f => println((f.posX, f.posY)))
+board.setFigure(Pawn(3, 1, Team.black))
 MoveDown.perform(board.fields, fig).foreach(f => println((f.posX, f.posY)))
 
 
@@ -107,6 +134,9 @@ case object MoveRightDown extends Diagonal(Right, Down)
 case object MoveRightUp extends Diagonal(Right, Up)
 
 MoveLeftDown.perform(board.fields, fig).foreach(f => println((f.posX, f.posY)))
+board.setFigure(Pawn(0, 0, Team.white))
+MoveLeftDown.perform(board.fields, fig).foreach(f => println((f.posX, f.posY)))
+
 MoveLeftUp.perform(board.fields, fig).foreach(f => println((f.posX, f.posY)))
 MoveRightDown.perform(board.fields, fig).foreach(f => println((f.posX, f.posY)))
 MoveRightUp.perform(board.fields, fig).foreach(f => println((f.posX, f.posY)))
