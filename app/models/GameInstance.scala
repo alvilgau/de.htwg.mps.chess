@@ -131,6 +131,7 @@ class GameInstance(gameName: String, var player1: Player) {
     player2 = null
     run = false
     finished = true
+    chess.system.terminate()
   }
 
 }
