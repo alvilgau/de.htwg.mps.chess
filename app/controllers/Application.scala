@@ -33,6 +33,7 @@ class Application @Inject()(implicit system: ActorSystem, materializer: Material
   }
 
   def lobby = Action { request =>
+    gameInstances = gameInstances.filter(!_._2.finished)
     val player = getCurrentPlayer(request)
     if (player.isEmpty) {
       // first visit, create player

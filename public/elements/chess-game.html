@@ -68,6 +68,10 @@
         },
 
         setData: function (data) {
+            if (!data.fields && !data.exchange) {
+                return;
+            }
+
             this.fields = data.fields;
             this.fields.forEach(function (field) {
                 if ((field.posX + field.posY) % 2 == 0) {

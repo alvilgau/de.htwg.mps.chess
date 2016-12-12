@@ -9,6 +9,12 @@ class Player {
       case msg: String =>
         out ! msg
     }
+
+    override def postStop(): Unit = {
+      if (game != null) {
+        game.leave(Player.this)
+      }
+    }
   }
 
   var client: ActorRef = _
@@ -18,6 +24,10 @@ class Player {
   def createActor(out: ActorRef): Props = {
     client = out
     Props(new PlayerActor(out))
+  }
+
+  def clear(): Unit = {
+    game = null
   }
 
 }

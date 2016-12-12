@@ -7,7 +7,7 @@ import core.scala.de.htwg.mps.chess.Chess
 import core.scala.de.htwg.mps.chess.controller._
 import play.api.libs.json._
 
-class GameInstance(gameName: String, player1: Player) {
+class GameInstance(gameName: String, var player1: Player) {
 
   class GameInstanceActor extends Actor {
 
@@ -78,6 +78,7 @@ class GameInstance(gameName: String, player1: Player) {
       player1.client ! json.toString
       json = board + ("type" -> JsString("lost"))
       player2.client ! json.toString
+      finish()
     }
   }
 
@@ -88,6 +89,8 @@ class GameInstance(gameName: String, player1: Player) {
   var player2: Player = _
 
   var run = false
+
+  var finished = false
 
   val chess = new Chess(gameId)
   chess.system.actorOf(Props(new GameInstanceActor()), "view$wui")
@@ -110,6 +113,24 @@ class GameInstance(gameName: String, player1: Player) {
     } else {
       player2.equals(player)
     }
+  }
+
+  def leave(player: Player): Unit = {
+    if (player1.equals(player)) {
+      player2.client ! Json.obj("type" -> "won").toString
+    } else {
+      player1.client ! Json.obj("type" -> "won").toString
+    }
+    finish()
+  }
+
+  private def finish(): Unit = {
+    player1.clear()
+    player1 = null
+    player2.clear()
+    player2 = null
+    run = false
+    finished = true
   }
 
 }
