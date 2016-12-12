@@ -93,7 +93,7 @@ class GameInstance(gameName: String, var player1: Player) {
 
   var finished = false
 
-  val chess = new Chess(gameId)
+  val chess = new Chess()
   chess.system.actorOf(Props(new GameInstanceActor()), "view$wui")
 
   var turnPlayer1: Boolean = _

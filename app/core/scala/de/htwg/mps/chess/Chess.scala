@@ -4,8 +4,8 @@ import akka.actor.{ActorRef, ActorSystem, Props}
 import core.scala.de.htwg.mps.chess.aview.tui.TextUI
 import core.scala.de.htwg.mps.chess.controller.ChessController
 
-class Chess(id: String) {
-  val system = ActorSystem("ChessSystem" + id)
+class Chess() {
+  val system = ActorSystem("ChessSystem")
   val tui: ActorRef = system.actorOf(Props[TextUI], "view$tui")
   var controller: ActorRef = _
 
@@ -17,8 +17,7 @@ class Chess(id: String) {
 object Chess {
 
   def main(args: Array[String]) {
-    val chess = new Chess("1")
-
+    val chess = new Chess()
     chess.start()
 
     while (true) {
