@@ -104,7 +104,7 @@ class GameInstance(gameName: String, player1: Player) {
     chess.start()
   }
 
-  def isCurrentTurn(player: Player) = {
+  def isCurrentTurn(player: Player): Boolean = {
     if (turnPlayer1) {
       player1.equals(player)
     } else {
