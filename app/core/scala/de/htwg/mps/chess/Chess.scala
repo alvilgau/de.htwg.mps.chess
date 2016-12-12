@@ -4,7 +4,7 @@ import akka.actor.{ActorRef, ActorSystem, Props}
 import core.scala.de.htwg.mps.chess.aview.tui.TextUI
 import core.scala.de.htwg.mps.chess.controller.ChessController
 
-class Chess() {
+class Chess {
   val system = ActorSystem("ChessSystem")
   val tui: ActorRef = system.actorOf(Props[TextUI], "view$tui")
   var controller: ActorRef = _
