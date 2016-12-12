@@ -29,9 +29,10 @@ class GameInstance(gameName: String, var player1: Player) {
 
       // update
       case info: UpdateInfo =>
-        val json: JsObject = Json.toJson(InfoDTO.fromInfo(info)).as[JsObject]
+        val dto = InfoDTO.fromInfo(info)
+        val json: JsObject = Json.toJson(dto).as[JsObject]
+        data = Json.toJson(dto.fields)
         turnPlayer1 = info.turnPlayer1
-        data = json
         if (info.selected == null) {
           player1.client ! json.toString
           player2.client ! json.toString
@@ -72,7 +73,7 @@ class GameInstance(gameName: String, var player1: Player) {
 
   var turnPlayer1: Boolean = _
 
-  var data: JsObject = _
+  var data: JsValue = _
 
   def getGameName: String = gameName
 

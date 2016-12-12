@@ -67,7 +67,7 @@
         is: "chess-game",
 
         properties: {
-            data: Object,
+            data: Array
         },
 
         observers: [
@@ -77,7 +77,7 @@
         _dataChanged: function () {
             if (this.data) {
                 this.previewClass = "preview";
-                this._setFields(this.data.fields)
+                this._setFields(this.data)
             }
         },
 

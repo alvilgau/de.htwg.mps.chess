@@ -9,8 +9,11 @@ case class FieldDTO(posX: Int, posY: Int, figure: String, var highlight: String 
 case class InfoDTO(fields: List[FieldDTO], statusMessage: String, turnMessage: String, checkmateMessage: String)
 
 object InfoDTO {
+
+  implicit val infoDTOFormat: OFormat[InfoDTO] = Json.format[InfoDTO]
+
   def fromInfo(info: Info): InfoDTO = {
-    val fields: List[FieldDTO] = fromBoard(info.board)
+    val fields: List[FieldDTO] = FieldDTO.fromBoard(info.board)
     info match {
       case gi: GameoverInfo => InfoDTO(fields, gi.status, "", gi.checkMate.getStatusMessage)
       case _: ExchangeInfo => InfoDTO(fields, "", "", "")
@@ -26,8 +29,13 @@ object InfoDTO {
         InfoDTO(fields, ui.status, ui.turnMessage, ui.checkMate.getStatusMessage)
     }
   }
+}
 
-  private def fromBoard(board: Board): List[FieldDTO] = {
+object FieldDTO {
+
+  implicit val fieldDTOFormat: OFormat[FieldDTO] = Json.format[FieldDTO]
+
+  def fromBoard(board: Board): List[FieldDTO] = {
     board.fields.map(field => {
       var figure = "empty"
       if (field.isSet)
@@ -36,7 +44,4 @@ object InfoDTO {
     }).sortWith(_.posX < _.posX)
       .sortWith(_.posY > _.posY)
   }
-
-  implicit val fieldDTOFormat: OFormat[FieldDTO] = Json.format[FieldDTO]
-  implicit val infoDTOFormat: OFormat[InfoDTO] = Json.format[InfoDTO]
 }
