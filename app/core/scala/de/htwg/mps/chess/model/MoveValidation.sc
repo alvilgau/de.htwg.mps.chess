@@ -39,7 +39,7 @@ case object Left extends MoveDirection {
   }
 }
 
-object Right extends MoveDirection {
+case object Right extends MoveDirection {
   override def filter(field: Field)(implicit figure: Figure): Boolean = {
     field.posX > figure.posX
   }
@@ -49,7 +49,7 @@ object Right extends MoveDirection {
   }
 }
 
-class Move(md: MoveDirection) {
+case class Move(md: MoveDirection) {
 
   private def sameDirection(field: Field)(implicit figure: Figure): Boolean = {
     md match {
