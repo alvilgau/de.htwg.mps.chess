@@ -33,6 +33,7 @@ class GameInstance(gameName: String, var player1: Player) {
       case info: UpdateInfo =>
         turnPlayer1 = info.turnPlayer1
         var json = boardToJson(info)
+        data = json
         json = json + ("statusMessage" -> JsString(info.status))
         json = json + ("checkmateMessage" -> JsString(info.checkMate.getStatusMessage))
         json = json + ("turnMessage" -> JsString(info.turnMessage))
@@ -96,6 +97,8 @@ class GameInstance(gameName: String, var player1: Player) {
   chess.system.actorOf(Props(new GameInstanceActor()), "view$wui")
 
   var turnPlayer1: Boolean = _
+
+  var data: JsObject = _
 
   def getGameName: String = gameName
 

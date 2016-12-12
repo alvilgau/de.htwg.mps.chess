@@ -49,11 +49,14 @@
         }
     </style>
     <template>
-        <template is="dom-repeat" items="{{fields}}" as="field">
-            <div class$="field {{field.color}} {{field.highlight}}" on-tap="_tap">
-                <img src="assets/images/{{field.figure}}.png">
-            </div>
-        </template>
+
+        <div class$="{{previewClass}}">
+            <template is="dom-repeat" items="{{fields}}" as="field">
+                <div class$="field {{field.color}} {{field.highlight}}" on-tap="_move">
+                    <img src="assets/images/{{field.figure}}.png">
+                </div>
+            </template>
+        </div>
 
         <div class="clear"></div>
     </template>
@@ -64,15 +67,39 @@
         is: "chess-game",
 
         properties: {
-            fields: Array
+            data: Object,
+        },
+
+        observers: [
+            '_dataChanged(data.*)'
+        ],
+
+        _dataChanged: function () {
+            if (this.data) {
+                this.previewClass = "preview";
+                this._setFields(this.data.fields)
+            }
+        },
+
+        ready: function () {
+            console.log('READY:.........');
+            this._setFields(this.data.fields);
         },
 
         setData: function (data) {
-            if (!data.fields && !data.exchange) {
+            this._setFields(data.fields);
+
+            if (data.exchange) {
+                $("#exchangeAlert").show();
+            }
+        },
+
+        _setFields: function (fields) {
+            if (fields == null) {
                 return;
             }
 
-            this.fields = data.fields;
+            this.fields = fields;
             this.fields.forEach(function (field) {
                 if ((field.posX + field.posY) % 2 == 0) {
                     field.color = "dark";
@@ -80,10 +107,6 @@
                     field.color = "light";
                 }
             });
-
-            if (data.exchange) {
-                $("#exchangeAlert").show();
-            }
         },
 
         exchange: function (figure) {
@@ -94,7 +117,7 @@
             $("#exchangeAlert").hide();
         },
 
-        _tap: function (event) {
+        _move: function (event) {
             var field = event.model.field;
             $.ajax({
                 type: "GET",
