@@ -14,9 +14,7 @@ class GameInstance(gameName: String, var player1: Player) {
     override def receive: Receive = {
       // game over
       case info: GameoverInfo =>
-        var json = Json.obj("fields" -> boardToDTO(info))
-        json = json + ("statusMessage" -> JsString(info.status))
-        json = json + ("checkmateMessage" -> JsString(info.checkMate.getStatusMessage))
+        val json: JsObject = Json.toJson(InfoDTO.fromInfo(info)).as[JsObject]
         if (info.checkMate.isMateBlack) {
           notifyGameover(json, player1, player2)
         } else {
@@ -25,45 +23,21 @@ class GameInstance(gameName: String, var player1: Player) {
 
       // exchange
       case info: ExchangeInfo =>
-        var json = Json.obj("fields" -> boardToDTO(info))
+        var json: JsObject = Json.toJson(InfoDTO.fromInfo(info)).as[JsObject]
         json = json + ("exchange" -> JsBoolean(true))
         notifyPlayer(info.turnPlayer1, json.toString)
 
       // update
       case info: UpdateInfo =>
+        val json: JsObject = Json.toJson(InfoDTO.fromInfo(info)).as[JsObject]
         turnPlayer1 = info.turnPlayer1
-        var json = boardToJson(info)
         data = json
-        json = json + ("statusMessage" -> JsString(info.status))
-        json = json + ("checkmateMessage" -> JsString(info.checkMate.getStatusMessage))
-        json = json + ("turnMessage" -> JsString(info.turnMessage))
         if (info.selected == null) {
           player1.client ! json.toString
           player2.client ! json.toString
         } else {
           notifyPlayer(info.turnPlayer1, json.toString)
         }
-    }
-
-    private def boardToJson(info: UpdateInfo): JsObject = {
-      val fields: List[FieldDTO] = boardToDTO(info)
-      if (info.selected != null) {
-        // set selected field
-        fields.find(f => f.posX == info.selected._1 && f.posY == info.selected._2).get.highlight = "selected "
-
-        // set fields on the can be moved
-        fields.filter(f => info.possibleMoves.exists(p => p.posX == f.posX && p.posY == f.posY))
-          .foreach(_.highlight += "possible")
-      }
-
-      Json.obj("fields" -> fields)
-    }
-
-    private def boardToDTO(info: Info): List[FieldDTO] = {
-      info.board.fields
-        .map(FieldDTO.fromField)
-        .sortWith(_.posX < _.posX)
-        .sortWith(_.posY > _.posY)
     }
 
     def notifyPlayer(turnPlayer1: Boolean, data: String): Unit = {
