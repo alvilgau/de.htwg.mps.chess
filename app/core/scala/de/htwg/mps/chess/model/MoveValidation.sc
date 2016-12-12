@@ -9,7 +9,7 @@ trait MoveDirection {
   def sort(f1: Field, f2: Field): Boolean
 }
 
-case object MoveDown extends MoveDirection {
+case object Down extends MoveDirection {
   override def filter(field: Field)(implicit figure: Figure): Boolean = {
     field.posY < figure.posY
   }
@@ -19,7 +19,7 @@ case object MoveDown extends MoveDirection {
   }
 }
 
-case object MoveUp extends MoveDirection {
+case object Up extends MoveDirection {
   override def filter(field: Field)(implicit figure: Figure): Boolean = {
     field.posY > figure.posY
   }
@@ -29,8 +29,7 @@ case object MoveUp extends MoveDirection {
   }
 }
 
-
-case object MoveLeft extends MoveDirection {
+case object Left extends MoveDirection {
   override def filter(field: Field)(implicit figure: Figure): Boolean = {
     field.posX < figure.posX
   }
@@ -40,13 +39,30 @@ case object MoveLeft extends MoveDirection {
   }
 }
 
-case object MoveRight extends MoveDirection {
+object Right extends MoveDirection {
   override def filter(field: Field)(implicit figure: Figure): Boolean = {
     field.posX > figure.posX
   }
 
   override def sort(f1: Field, f2: Field): Boolean = {
     f1.posX < f2.posX
+  }
+}
+
+class Move(md: MoveDirection) {
+
+  private def sameDirection(field: Field)(implicit figure: Figure): Boolean = {
+    md match {
+      case Left | Right => field.posY == figure.posY
+      case Up | Down => field.posX == figure.posX
+    }
+  }
+
+  def perform(fields: List[Field], figure: Figure): List[Field] = {
+    implicit val f: Figure = figure
+    fields.filter(md.filter)
+      .filter(sameDirection)
+      .sortWith(md.sort)
   }
 }
 
@@ -68,13 +84,27 @@ class Diagonal(md1: MoveDirection, md2: MoveDirection) {
   }
 }
 
-case object MoveLeftDown extends Diagonal(MoveLeft, MoveDown)
+case object MoveLeft extends Move(Left)
 
-case object MoveLeftUp extends Diagonal(MoveLeft, MoveUp)
+case object MoveRight extends Move(Right)
 
-case object MoveRightDown extends Diagonal(MoveRight, MoveDown)
+case object MoveUp extends Move(Up)
 
-case object MoveRightUp extends Diagonal(MoveRight, MoveUp)
+case object MoveDown extends Move(Down)
+
+MoveLeft.perform(board.fields, fig).foreach(f => println((f.posX, f.posY)))
+MoveRight.perform(board.fields, fig).foreach(f => println((f.posX, f.posY)))
+MoveUp.perform(board.fields, fig).foreach(f => println((f.posX, f.posY)))
+MoveDown.perform(board.fields, fig).foreach(f => println((f.posX, f.posY)))
+
+
+case object MoveLeftDown extends Diagonal(Left, Down)
+
+case object MoveLeftUp extends Diagonal(Left, Up)
+
+case object MoveRightDown extends Diagonal(Right, Down)
+
+case object MoveRightUp extends Diagonal(Right, Up)
 
 MoveLeftDown.perform(board.fields, fig).foreach(f => println((f.posX, f.posY)))
 MoveLeftUp.perform(board.fields, fig).foreach(f => println((f.posX, f.posY)))
