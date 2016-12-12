@@ -116,19 +116,23 @@ class GameInstance(gameName: String, var player1: Player) {
   }
 
   def leave(player: Player): Unit = {
-    if (player1.equals(player)) {
+    if (player1.equals(player) && player2 != null) {
       player2.client ! Json.obj("type" -> "won").toString
-    } else {
+    } else if (player1 != null) {
       player1.client ! Json.obj("type" -> "won").toString
     }
     finish()
   }
 
   private def finish(): Unit = {
-    player1.clear()
-    player1 = null
-    player2.clear()
-    player2 = null
+    if (player1 != null) {
+      player1.clear()
+      player1 = null
+    }
+    if (player2 != null) {
+      player2.clear()
+      player2 = null
+    }
     run = false
     finished = true
     chess.system.terminate()
