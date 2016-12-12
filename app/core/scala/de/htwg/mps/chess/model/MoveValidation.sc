@@ -49,7 +49,7 @@ case object Right extends MoveDirection {
   }
 }
 
-case class Move(md: MoveDirection) {
+class Move(md: MoveDirection) {
 
   private def sameDirection(field: Field)(implicit figure: Figure): Boolean = {
     md match {
