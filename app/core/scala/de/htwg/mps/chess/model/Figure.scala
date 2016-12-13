@@ -1,8 +1,9 @@
 package core.scala.de.htwg.mps.chess.model
 
 import core.scala.de.htwg.mps.chess.model.Team.Team
+import core.scala.de.htwg.mps.chess.model.movement.Movement
 
-abstract class Figure extends MoveValidator {
+abstract class Figure extends Movement {
 
   var posX: Int
 
