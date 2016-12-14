@@ -32,3 +32,20 @@ object ValidationWithoutKill extends MoveValidation {
     fields.takeWhile(!_.isSet)
   }
 }
+
+/**
+  * Figure can only move one field where a enemy figure is set.
+  */
+object ValidationKill extends MoveValidation {
+  override def validate(fields: List[Field])(implicit figure: Figure): List[Field] = {
+    if (fields.isEmpty) {
+      return fields
+    }
+
+    val fistField = fields.head
+    if (fistField.isSet && fistField.figure.get.team != figure.team) {
+      return List(fistField)
+    }
+    List()
+  }
+}
