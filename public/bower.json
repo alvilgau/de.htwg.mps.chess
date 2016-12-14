@@ -15,7 +15,8 @@
     "tests"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#^1.6.0"
+    "polymer": "Polymer/polymer#^1.6.0",
+    "neon-animation": "PolymerElements/neon-animation#^1.2.4"
   },
   "private": true
 }

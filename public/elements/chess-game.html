@@ -1,4 +1,6 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animation.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animations.html">
 
 <dom-module id="chess-game">
     <style>
@@ -50,7 +52,7 @@
     </style>
     <template>
 
-        <div class$="{{previewClass}}">
+        <div hidden="{{hidden}}" id="board" class$="{{previewClass}}">
             <template is="dom-repeat" items="{{fields}}" as="field">
                 <div class$="field {{field.color}} {{field.highlight}}" on-tap="_move">
                     <img src="assets/images/{{field.figure}}.png">
@@ -66,8 +68,25 @@
     Polymer({
         is: "chess-game",
 
+        behaviors: [
+            Polymer.NeonAnimatableBehavior,
+            Polymer.NeonAnimationRunnerBehavior
+        ],
+
         properties: {
-            data: Array
+            data: Array,
+            hidden: {
+                type: Boolean,
+                value: true
+            },
+            animationConfig: {
+                value: function () {
+                    return {
+                        name: 'fade-in-animation',
+                        node: this.$$('#board')
+                    }
+                }
+            }
         },
 
         observers: [
@@ -102,6 +121,11 @@
                     field.color = "light";
                 }
             });
+
+            if (this.hidden) {
+                this.playAnimation();
+                this.hidden = false;
+            }
         },
 
         exchange: function (figure) {
