@@ -72,7 +72,7 @@ class Application @Inject()(implicit system: ActorSystem, materializer: Material
   def move(posX: Int, posY: Int) = Action { request =>
     val player = getCurrentPlayer(request).get
     val game = player.game
-    if (game.isCurrentTurn(player)) {
+    if (game != null && game.isCurrentTurn(player)) {
       game.chess.controller ! MoveCmd(posX, posY)
       Ok("successfully move")
     } else {
