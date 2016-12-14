@@ -86,7 +86,7 @@ trait Movement {
   }
 
   def diagonalMove(figure: Figure, board: Board, numberOfSteps: Int): List[Field] = {
-    MoveDiagonal(Left, Up).perform(figure, board.fields.take(numberOfSteps)) ++
+    MoveDiagonal(Left, Up).perform(figure, board.fields).take(numberOfSteps) ++
       MoveDiagonal(Left, Down).perform(figure, board.fields).take(numberOfSteps) ++
       MoveDiagonal(Right, Up).perform(figure, board.fields).take(numberOfSteps) ++
       MoveDiagonal(Right, Down).perform(figure, board.fields).take(numberOfSteps)
