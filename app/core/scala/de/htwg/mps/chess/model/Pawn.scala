@@ -8,6 +8,7 @@ case class Pawn(var posX: Int, var posY: Int, var team: Team) extends Figure {
 
   private val startPosY = posY
 
+  // TODO: use validation of Movement.class
   override def getPossibleMoves(board: Board): List[Field] = {
     val possibleMoves = new ListBuffer[Field]
     val dY = if (team == Team.white) 1 else -1

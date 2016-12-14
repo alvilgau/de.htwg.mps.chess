@@ -8,9 +8,9 @@ trait MoveValidation {
     if (index == -1) {
       return fields
     }
-    val list = fields.take(index + 1).reverse
-    if (list.head.figure.get.team == figure.team) {
-      return list.tail
+    val list = fields.take(index + 1)
+    if (list.last.figure.get.team == figure.team) {
+      return list.dropRight(1)
     }
     list
   }
