@@ -2,30 +2,93 @@ package core.scala.de.htwg.mps.chess.model.movement
 
 import core.scala.de.htwg.mps.chess.model._
 
+import scala.collection.mutable.ListBuffer
+
+case class Move(md: MoveDirection, mv: MoveValidation = ValidationWithKill) {
+  private def sameDirection(field: Field)(implicit figure: Figure): Boolean = {
+    md match {
+      case Left | Right => field.posY == figure.posY
+      case Up | Down => field.posX == figure.posX
+    }
+  }
+
+  def perform(figure: Figure, fields: List[Field]): List[Field] = {
+    implicit val fig: Figure = figure
+    val list = fields.filter(md.filter)
+      .filter(sameDirection)
+      .sortWith(md.sort)
+    mv.validate(list)
+  }
+}
+
+case class MoveDiagonal(md1: MoveDirection, md2: MoveDirection, mv: MoveValidation = ValidationWithKill) {
+
+  def this(md1: MoveDirection, md2: MoveDirection) = this(md1, md2, ValidationWithKill)
+
+  private def distance(v1: Int, v2: Int): Int = {
+    Math.max(v1, v2) - Math.min(v1, v2)
+  }
+
+  private def sameDistance(field: Field)(implicit figure: Figure): Boolean = {
+    distance(field.posX, figure.posX) == distance(field.posY, figure.posY)
+  }
+
+  def perform(figure: Figure, fields: List[Field]): List[Field] = {
+    implicit val fig: Figure = figure
+    val list = fields.filter(md1.filter)
+      .filter(md2.filter)
+      .filter(sameDistance)
+      .sortWith(md1.sort)
+    mv.validate(list)
+  }
+}
+
+case class MoveComplex(dx: Int, dy: Int) {
+  private def getAllPossibilities(figure: Figure, dx: Int, dy: Int): List[MoveComplex] = {
+    val list = new ListBuffer[MoveComplex]
+    list += MoveComplex(figure.posX + dx, figure.posY + dy)
+    list += MoveComplex(figure.posX + dx, figure.posY - dy)
+    list += MoveComplex(figure.posX - dx, figure.posY + dy)
+    list += MoveComplex(figure.posX - dx, figure.posY - dy)
+    list.toList
+  }
+
+  def perform(figure: Figure, fields: List[Field]): List[Field] = {
+    val possibilities = getAllPossibilities(figure, dx, dy) ++ getAllPossibilities(figure, dy, dx)
+    fields.filter(f => possibilities.exists(p => p.dx == f.posX && p.dy == f.posY))
+      .filter(f => !f.isSet || (f.isSet && f.figure.get.team != figure.team))
+  }
+}
+
 trait Movement {
 
   def verticalMove(figure: Figure, board: Board): List[Field] = {
-    Move(Left).perform(figure, board.fields) ++
-      Move(Right).perform(figure, board.fields)
+    verticalMove(figure, board, board.size)
+  }
+
+  def verticalMove(figure: Figure, board: Board, numberOfSteps: Int): List[Field] = {
+    Move(Left).perform(figure, board.fields).take(numberOfSteps) ++
+      Move(Right).perform(figure, board.fields).take(numberOfSteps)
   }
 
   def horizontalMove(figure: Figure, board: Board): List[Field] = {
-    Move(Up).perform(figure, board.fields) ++
-      Move(Down).perform(figure, board.fields)
+    horizontalMove(figure, board, board.size)
+  }
+
+  def horizontalMove(figure: Figure, board: Board, numberOfSteps: Int): List[Field] = {
+    Move(Up).perform(figure, board.fields).take(numberOfSteps) ++
+      Move(Down).perform(figure, board.fields).take(numberOfSteps)
   }
 
   def diagonalMove(figure: Figure, board: Board): List[Field] = {
-    MoveDiagonal(Left, Up).perform(figure, board.fields) ++
-      MoveDiagonal(Left, Down).perform(figure, board.fields) ++
-      MoveDiagonal(Right, Up).perform(figure, board.fields) ++
-      MoveDiagonal(Right, Down).perform(figure, board.fields)
+    diagonalMove(figure, board, board.size)
   }
 
-  def simpleMove(figure: Figure, board: Board, moves: List[Array[Int]]): List[Field] = {
-    board.fields.filter { f =>
-      moves.exists(m => (m(0) + figure.posX) == f.posX
-        && (m(1) + figure.posY) == f.posY)
-    }.filter(f => !f.isSet || (f.isSet && f.figure.get.team != figure.team))
+  def diagonalMove(figure: Figure, board: Board, numberOfSteps: Int): List[Field] = {
+    MoveDiagonal(Left, Up).perform(figure, board.fields.take(numberOfSteps)) ++
+      MoveDiagonal(Left, Down).perform(figure, board.fields).take(numberOfSteps) ++
+      MoveDiagonal(Right, Up).perform(figure, board.fields).take(numberOfSteps) ++
+      MoveDiagonal(Right, Down).perform(figure, board.fields).take(numberOfSteps)
   }
 
 }
