@@ -48,6 +48,6 @@ class SwingFrame(controller: ActorSelection) extends Frame {
         statusPanel.setStatus(ui.status, ui.checkMate.getStatusMessage)
         statusPanel.setTurn(ui.turnMessage)
     }
-
   }
+
 }
