@@ -42,9 +42,9 @@ class SwingFrame(controller: ActorSelection) extends Frame {
         val exchangeValue: ExchangeValue = InfoDialog.handleExchange(contents.head)
         controller ! ExchangeCmd(exchangeValue)
       case gi: GameoverInfo =>
-        // TODO: show game over dialog/popup
         statusPanel.setStatus(gi.status, gi.checkMate.getStatusMessage)
         statusPanel.setTurn("-")
+        InfoDialog.showGameOver(contents.head, gi.checkMate.getStatusMessage)
       case ui: UpdateInfo =>
         statusPanel.setStatus(ui.status, ui.checkMate.getStatusMessage)
         statusPanel.setTurn(ui.turnMessage)

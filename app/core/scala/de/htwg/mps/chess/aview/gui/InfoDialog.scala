@@ -25,6 +25,10 @@ object InfoDialog {
     if (r < 0) None else Some(entries(r))
   }
 
+  def showGameOver(frame: Component, checkmateMessage: String): Unit = {
+    Dialog.showMessage(frame, checkmateMessage, "Game Over")
+  }
+
   def handleExchange(frame: Component): ExchangeValue = {
     var option: Option[Exchange.Value] = None
     while (option.isEmpty) {
