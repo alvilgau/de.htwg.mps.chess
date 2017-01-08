@@ -3,12 +3,14 @@ package core.scala.de.htwg.mps.chess.aview.gui
 import java.awt.{Color, Insets}
 import javax.swing.ImageIcon
 
-import core.scala.de.htwg.mps.chess.controller.{Info, UpdateInfo}
+import akka.actor.ActorSelection
+import core.scala.de.htwg.mps.chess.controller.{Info, MoveCmd, UpdateInfo}
 import core.scala.de.htwg.mps.chess.model.Board
 
+import scala.swing.event.ButtonClicked
 import scala.swing.{Button, GridPanel, Label}
 
-class GamePanel extends GridPanel(0, 9) {
+class GamePanel(controller: ActorSelection) extends GridPanel(0, 9) {
 
   private val cols = Array("A", "B", "C", "D", "E", "F", "G", "H")
   private val light = Color.decode("#E5CEA4")
@@ -34,6 +36,9 @@ class GamePanel extends GridPanel(0, 9) {
     // create button
     val button = new Button() {
       margin = new Insets(0, 0, 0, 0)
+      reactions += {
+        case _: ButtonClicked => controller ! MoveCmd(row, column)
+      }
     }
     chessButtons(row)(column) = button
 

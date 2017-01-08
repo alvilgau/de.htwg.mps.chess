@@ -21,7 +21,7 @@ class SwingFrame(controller: ActorSelection) extends Frame {
   }
 
   val statusPanel = new StatusPanel
-  val gamePanel = new GamePanel
+  val gamePanel = new GamePanel(controller)
 
   contents = new BorderPanel {
     layout(statusPanel) = BorderPanel.Position.North
