@@ -36,5 +36,6 @@ class SwingFrame(controller: ActorSelection) extends Frame {
   def update(info: UpdateInfo): Unit = {
     statusPanel.setStatus(info.status, info.checkMate.getStatusMessage)
     statusPanel.setTurn(info.turnMessage)
+    gamePanel.update(info)
   }
 }
