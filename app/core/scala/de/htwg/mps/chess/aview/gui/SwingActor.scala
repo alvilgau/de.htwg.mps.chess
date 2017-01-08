@@ -1,7 +1,7 @@
 package core.scala.de.htwg.mps.chess.aview.gui
 
 import akka.actor.{Actor, ActorSelection}
-import core.scala.de.htwg.mps.chess.controller.{InvalidInfo, UpdateInfo}
+import core.scala.de.htwg.mps.chess.controller.{Info, InvalidInfo}
 
 class SwingActor extends Actor {
   val controller: ActorSelection = context.system.actorSelection("user/controller")
@@ -9,8 +9,6 @@ class SwingActor extends Actor {
 
   override def receive: Receive = {
     case info: InvalidInfo => println(info.message)
-    //    case info: ExchangeInfo => printExchange(info)
-    //    case info: GameoverInfo => printGameover(info)
-    case info: UpdateInfo => frame.update(info)
+    case info: Info => frame.update(info)
   }
 }

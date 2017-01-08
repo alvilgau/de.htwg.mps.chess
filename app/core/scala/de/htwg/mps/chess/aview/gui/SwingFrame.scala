@@ -1,7 +1,7 @@
 package core.scala.de.htwg.mps.chess.aview.gui
 
 import akka.actor.ActorSelection
-import core.scala.de.htwg.mps.chess.controller.{QuitCmd, RestartCmd, UpdateInfo}
+import core.scala.de.htwg.mps.chess.controller._
 
 import scala.swing._
 import scala.swing.event.Key
@@ -33,9 +33,21 @@ class SwingFrame(controller: ActorSelection) extends Frame {
   size = new Dimension(500, 500)
   visible = true
 
-  def update(info: UpdateInfo): Unit = {
-    statusPanel.setStatus(info.status, info.checkMate.getStatusMessage)
-    statusPanel.setTurn(info.turnMessage)
+  def update(info: Info): Unit = {
     gamePanel.update(info)
+
+    info match {
+      case ei: ExchangeInfo =>
+        // TODO: handle exchange
+        println("EXCHANGE ...")
+      case gi: GameoverInfo =>
+        // TODO: show game over dialog/popup
+        statusPanel.setStatus(gi.status, gi.checkMate.getStatusMessage)
+        statusPanel.setTurn("-")
+      case ui: UpdateInfo =>
+        statusPanel.setStatus(ui.status, ui.checkMate.getStatusMessage)
+        statusPanel.setTurn(ui.turnMessage)
+    }
+
   }
 }
