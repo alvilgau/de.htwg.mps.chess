@@ -1,6 +1,7 @@
 package core.scala.de.htwg.mps.chess.aview.gui
 
 import akka.actor.ActorSelection
+import core.scala.de.htwg.mps.chess.controller.Exchange.ExchangeValue
 import core.scala.de.htwg.mps.chess.controller._
 
 import scala.swing._
@@ -37,9 +38,9 @@ class SwingFrame(controller: ActorSelection) extends Frame {
     gamePanel.update(info)
 
     info match {
-      case ei: ExchangeInfo =>
-        // TODO: handle exchange
-        println("EXCHANGE ...")
+      case _: ExchangeInfo =>
+        val exchangeValue: ExchangeValue = InfoDialog.handleExchange(contents.head)
+        controller ! ExchangeCmd(exchangeValue)
       case gi: GameoverInfo =>
         // TODO: show game over dialog/popup
         statusPanel.setStatus(gi.status, gi.checkMate.getStatusMessage)

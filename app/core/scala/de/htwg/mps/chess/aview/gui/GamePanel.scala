@@ -54,16 +54,19 @@ class GamePanel(controller: ActorSelection) extends GridPanel(0, 9) {
   def update(info: Info): Unit = {
     updateBoard(info.board)
 
-    val ui = info.asInstanceOf[UpdateInfo]
-    // mark selected field
-    if (ui.selected != null) {
-      chessButtons(ui.selected._1)(ui.selected._2).background = lightBlue
-    }
-    // mark possible moves
-    if (ui.possibleMoves != null) {
-      ui.possibleMoves.foreach { field =>
-        chessButtons(field.posX)(field.posY).background = lightBlue
-      }
+    info match {
+      case ui: UpdateInfo =>
+        // mark selected field
+        if (ui.selected != null) {
+          chessButtons(ui.selected._1)(ui.selected._2).background = lightBlue
+        }
+        // mark possible moves
+        if (ui.possibleMoves != null) {
+          ui.possibleMoves.foreach { field =>
+            chessButtons(field.posX)(field.posY).background = lightBlue
+          }
+        }
+      case _ =>
     }
   }
 
