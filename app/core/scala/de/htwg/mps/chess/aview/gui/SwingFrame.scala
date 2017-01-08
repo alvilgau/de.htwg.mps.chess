@@ -31,7 +31,7 @@ class SwingFrame(controller: ActorSelection) extends Frame {
 
   title = "Chess"
   peer.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE)
-  size = new Dimension(500, 500)
+  size = new Dimension(700, 700)
   visible = true
 
   def update(info: Info): Unit = {
