@@ -7,9 +7,11 @@ import scala.swing.{GridPanel, Label}
 
 class StatusPanel extends GridPanel(2, 1) {
 
-  val arialFont = new Font("Arial", Font.CENTER_BASELINE, 16)
   background = Color.WHITE
   border = BorderFactory.createLineBorder(Color.BLACK, 1)
+  vGap = 3
+
+  val arialFont = new Font("Arial", Font.CENTER_BASELINE, 16)
 
   val status = new Label {
     font = arialFont
