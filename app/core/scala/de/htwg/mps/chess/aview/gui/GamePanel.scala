@@ -29,6 +29,11 @@ class GamePanel extends GridPanel(0, 9) {
     // create button
     val button = new Button() {
       margin = new Insets(0, 0, 0, 0)
+      if ((column + row) % 2 == 1) {
+        background = dark
+      } else {
+        background = light
+      }
     }
     chessFields(row)(column) = button
 
