@@ -44,7 +44,6 @@ class ChessController extends Actor {
         case 2 | 5 => field.figure = Some(Bishop(field.posX, posY, team))
         case 3 => field.figure = Some(Queen(field.posX, posY, team))
         case 4 => field.figure = Some(King(field.posX, posY, team))
-        case _ => field.figure = Some(Rook(field.posX, posY, team))
       }
     )
   }
