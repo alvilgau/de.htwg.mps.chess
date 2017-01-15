@@ -1,17 +1,16 @@
 package core.scala.de.htwg.mps.chess
 
 import akka.actor.{ActorRef, ActorSystem, Props}
-import core.scala.de.htwg.mps.chess.aview.gui.SwingActor
-import core.scala.de.htwg.mps.chess.aview.tui.TextUI
 import core.scala.de.htwg.mps.chess.controller.ChessController
 
+
 class Chess {
-  val system = ActorSystem("ChessSystem")
-  val tui: ActorRef = system.actorOf(Props[TextUI], "view$tui")
-  val gui: ActorRef = system.actorOf(Props[SwingActor], "view$gui")
+  this: ChessModule =>
+  implicit val system: ActorSystem = ActorSystem("ChessSystem")
   var controller: ActorRef = _
 
   def start(): Unit = {
+    createUI()
     controller = system.actorOf(Props[ChessController], "controller")
   }
 }
@@ -21,7 +20,7 @@ object Chess {
   import scala.concurrent.ExecutionContext.Implicits.global
 
   def main(args: Array[String]) {
-    val chess = new Chess()
+    val chess = new Chess with OfflineModule
     chess.start()
     chess.system.whenTerminated.onComplete(_ => System.exit(0))
 

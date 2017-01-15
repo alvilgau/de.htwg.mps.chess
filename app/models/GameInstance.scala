@@ -3,8 +3,8 @@ package models
 import java.util.UUID
 
 import akka.actor.{Actor, Props}
-import core.scala.de.htwg.mps.chess.Chess
 import core.scala.de.htwg.mps.chess.controller._
+import core.scala.de.htwg.mps.chess.{Chess, WebModule}
 import play.api.libs.json._
 
 class GameInstance(gameName: String, var player1: Player) {
@@ -68,7 +68,7 @@ class GameInstance(gameName: String, var player1: Player) {
 
   var finished = false
 
-  val chess = new Chess()
+  val chess = new Chess with WebModule
   chess.system.actorOf(Props(new GameInstanceActor()), "view$wui")
 
   var turnPlayer1: Boolean = _
